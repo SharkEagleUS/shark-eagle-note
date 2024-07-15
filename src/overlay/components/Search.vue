@@ -11,22 +11,22 @@
         </div>
 
         <div class="my-3 p-3 bg-white rounded shadow-sm">
-          <template v-if="notes.length > 0">
+          <template v-if="annotations.length > 0">
             <h6 class="border-bottom border-gray pb-2 mb-0">Search Result(s):</h6>
-            <div class="media text-muted pt-3" v-for="note in notes" :key="note.id">
-              <img :src="'https://s2.googleusercontent.com/s2/favicons?sz=64&domain=' + getHost(note.url)" style="border-style: none; width: 32px; height: 32px;" alt="" />
+            <div class="media text-muted pt-3" v-for="annotation in annotations" :key="annotation.id">
+              <img :src="'https://s2.googleusercontent.com/s2/favicons?sz=64&domain=' + getHost(annotation.url)" style="border-style: none; width: 32px; height: 32px;" alt="" />
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-left: 10px">
                 <div class="d-flex justify-content-between align-items-center w-100">
-                  <strong class="text-gray-dark" :style="{ backgroundColor: note.highlightColor }">{{ note.text }}</strong>
-                  <a :href="note.url" target="_blank" style="min-width: 90px">Open in new tab</a>
+                  <strong class="text-gray-dark" :style="{ backgroundColor: annotation.highlightColor }">{{ annotation.text }}</strong>
+                  <a :href="annotation.url" target="_blank" style="min-width: 90px">Open in new tab</a>
                 </div>
-                <span class="d-block" v-html="markdown(note.note)"></span>
+                <span class="d-block" v-html="markdown(annotation.note)"></span>
               </div>
             </div>
           </template>
           <template v-else>
             <div class="card">
-              <img class="card-img-top search-dog-img" :src="image" alt="Card image cap" />
+              <img class="card-img-top search-dog-img" :src="image" alt="Card cap" />
               <div class="card-body text-center">
                 <h5 class="card-title">I have eaten your results! ;-)</h5>
               </div>
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       keyword: '',
-      notes: [],
+      annotations: [],
       image: chrome.runtime.getURL('icons/dog.jpg'),
     };
   },
@@ -67,8 +67,8 @@ export default {
         toastr.error('Keyword cannot be empty!');
         return;
       }
-      searchPageAnnotations(this.keyword).then(notes => {
-        this.notes = notes;
+      searchPageAnnotations(this.keyword).then(annotations => {
+        this.annotations = annotations;
       });
     },
     getHost(url) {

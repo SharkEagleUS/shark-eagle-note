@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <img class="card-img-top" :src="image" alt="Card image cap" />
+    <img class="card-img-top" :src="image" alt="Card cap" />
     <div class="card-body text-center">
       <h5 class="card-title">You do not have any notes for this page! ;-)</h5>
     </div>
@@ -17,5 +17,3 @@ export default {
   },
 };
 </script>
-
-<style scoped></style>

@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       showSideBar: false,
-      notes: [],
+      annotations: [],
       showCustomNoteWindow: false,
       showSearch: false,
       errorMsg: '',
@@ -51,9 +51,9 @@ export default {
         // do not trigger highlight all after adding new note
         // only trigger it when page refresh
         if (this.highlight.doneForPageLoad) return;
-        this.notes = request.data;
-        this.notes.forEach(note => (note.clickCallback = this.highlightClick));
-        highlightAll(this.notes);
+        this.annotations = request.data;
+        this.annotations.forEach(note => (note.clickCallback = this.highlightClick));
+        highlightAll(this.annotations);
         this.highlight.doneForPageLoad = true;
         this.highlight.cmdToggle = true;
       }
@@ -62,7 +62,7 @@ export default {
           unmark();
           this.highlight.popover = [];
         } else {
-          highlightAll(this.notes);
+          highlightAll(this.annotations);
         }
         this.highlight.cmdToggle = !this.highlight.cmdToggle;
       } else if (request.action === types.CMD_GLOBAL_SEARCH) {

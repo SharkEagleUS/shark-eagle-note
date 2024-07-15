@@ -15,43 +15,41 @@
           "
         />
       </template>
-      <template v-else-if="showSignup">
-        <Signup
-          @show:login="
-            showLogin = true;
-            showSignup = false;
-          "
-        />
-      </template>
-      <template v-else-if="notes.length > 0">
+      <template v-else-if="annotations.length > 0">
         <div class="list-group">
-          <a href="javascript:void(0)" @click="noteHighlight(note)" class="list-group-item list-group-item-action" v-for="(note, index) in notes" :key="note.id">
-            <template v-if="note.isPageOnly">
-              <label class="text-primary">{{ note.text }}</label>
+          <a
+            href="javascript:void(0)"
+            @click="noteHighlight(annotation)"
+            class="list-group-item list-group-item-action"
+            v-for="(annotation, index) in annotations"
+            :key="annotation.id"
+          >
+            <template v-if="annotation.isPageOnly">
+              <label class="text-primary">{{ annotation.selectedText }}</label>
             </template>
             <template v-else>
-              <SelectedTextBlockquote :text="note.text" :class="colorClass(note.highlightColor)" />
+              <SelectedTextBlockquote :text="annotation.selectedText" :class="colorClass(annotation.highlightColor)" />
             </template>
             <div class="form-group">
-              <template v-if="note.showSave">
-                <ColorSelect v-if="!note.isPageOnly" :color="getNoteHighlightColor(note)" @update:color="note.newHighlightColor = $event"></ColorSelect>
-                <textarea class="form-control" rows="3" v-model="note.note"></textarea>
-                <vue-tags-input v-model="tag" :tags="note.tags" @tags-changed="newTags => (note.tags = parseTags(newTags))" />
+              <template v-if="annotation.showSave">
+                <ColorSelect v-if="!annotation.isPageOnly" :color="getNoteHighlightColor(annotation)" @update:color="annotation.newHighlightColor = $event"></ColorSelect>
+                <textarea class="form-control" rows="3" v-model="annotation.note"></textarea>
+                <vue-tags-input v-model="tag" :tags="annotation.tags" @tags-changed="newTags => (annotation.tags = parseTags(newTags))" />
               </template>
               <template v-else>
-                <div class="shadow-none p-3 bg-light rounded" v-if="!!note.note" v-html="markdown(note.note)"></div>
+                <div class="shadow-none p-3 bg-light rounded" v-if="!!annotation.note" v-html="markdown(annotation.note)"></div>
                 <div class="tags">
-                  <span v-for="tag in note.tags" :key="tag" class="badge badge-primary">{{ tag }}</span>
+                  <span v-for="tag in annotation.tags" :key="tag" class="badge badge-primary">{{ tag }}</span>
                 </div>
               </template>
             </div>
             <div class="row my-btn-group">
               <div class="col-md-6">
-                <small>{{ readableTime(note.createdTime) }}</small>
+                <small>{{ readableTime(annotation.createdAt) }}</small>
               </div>
               <div class="offset-md-3 col-md-3">
-                <template v-if="!note.showSave">
-                  <a href="javascript:void(0)" class="del-btn" @click.stop="deleteMyNote(note.id)">
+                <template v-if="!annotation.showSave">
+                  <a href="javascript:void(0)" class="del-btn" @click.stop="deleteMyNote(annotation.id)">
                     <fa-icon icon="trash-alt" />
                   </a>
                   <a href="javascript:void(0)" @click.stop="enableEdit(index)">
@@ -62,7 +60,7 @@
                   <a href="javascript:void(0)" @click.stop="cancelUpdate(index)">
                     <fa-icon icon="undo" />
                   </a>
-                  <a href="javascript:void(0)" style="color:green;" @click.stop="updateNote(note.id, index)">
+                  <a href="javascript:void(0)" style="color:green;" @click.stop="updateNote(annotation.id, index)">
                     <fa-icon icon="cloud-upload-alt" />
                   </a>
                 </template>
@@ -98,7 +96,6 @@ import { highlight } from '../../utils/highlight-mark';
 import { mdRender } from '../../utils/md';
 import { readableTimestamp } from '../../utils/base';
 import SelectedTextBlockquote from './SelectedTextBlockquote';
-import Signup from './Signup';
 import Login from './Login';
 import VueTagsInput from '@johmun/vue-tags-input';
 
@@ -115,7 +112,7 @@ export default {
   },
   data() {
     return {
-      notes: [],
+      annotations: [],
       showSideBar: false,
       showCustomNoteWindow: false,
       showLogin: false,
@@ -140,7 +137,7 @@ export default {
           if (request.sub_action === types.SHOW_LOGIN) {
             this.showLogin = true;
           } else {
-            this.notes = request.data;
+            this.annotations = request.data;
           }
         }
       }
@@ -165,11 +162,11 @@ export default {
     // This is a hack for v-for re-rendering:
     // https://vuejs.org/v2/guide/list.html#Mutation-Methods
     refreshNotesForRendering() {
-      this.notes.push({});
-      this.notes.pop();
+      this.annotations.push({});
+      this.annotations.pop();
     },
     toggleSave(index, showSave) {
-      const note = this.notes[index];
+      const note = this.annotations[index];
       note.showSave = showSave;
       this.refreshNotesForRendering();
     },
@@ -180,7 +177,7 @@ export default {
       this.toggleSave(index, false);
     },
     updateNote(noteId, index) {
-      const note = this.notes[index];
+      const note = this.annotations[index];
       if (note.base_note === note.note && (!note.newHighlightColor || note.highlightColor === note.newHighlightColor)) {
         this.cancelUpdate(index);
       } else {
@@ -212,7 +209,7 @@ export default {
       if (confirm('Sure to delete this note?')) {
         deletePageAnnotation(noteId).then(() => {
           console.log('Page annotation is deleted');
-          this.notes = this.notes.filter(n => noteId !== n.id);
+          this.annotations = this.annotations.filter(n => noteId !== n.id);
         });
       }
     },

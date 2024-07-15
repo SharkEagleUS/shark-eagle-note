@@ -4,18 +4,18 @@
     <h1 class="h3 mb-3 font-weight-normal">Please Login</h1>
 
     <div class="form-group">
-      <label class="sr-only">Username</label>
-      <input type="text" class="form-control" placeholder="Username" v-model="user.username" autofocus />
+      <input type="email" class="form-control" v-model="user.email" placeholder="Your Email" aria-describedby="emailHelp" />
+      <small id="emailHelp" class="form-text text-muted text-left">We'll never share your email with anyone else.</small>
     </div>
-    <div class="form-group">
-      <label class="sr-only">Password</label>
-      <input type="password" class="form-control" placeholder="Password" v-model="user.password" />
+
+    <div class="input-group">
+      <input type="text" class="form-control" v-model="user.token" placeholder="Verification Code" />
+      <div class="input-group-append">
+        <button class="btn btn-outline-primary" type="button" @click="sendCode">Send Code</button>
+      </div>
     </div>
-    <button class="btn btn-lg btn-primary btn-block" @click="login">Login</button>
-    <p>
-      Don't have an account?
-      <a class="link-mouse" @click="showSignup">Sign Up</a>
-    </p>
+
+    <button class="btn btn-lg btn-primary btn-block" @click="signIn">SignIn</button>
   </div>
 </template>
 
@@ -30,8 +30,8 @@ export default {
   data() {
     return {
       user: {
-        username: '',
-        password: '',
+        email: '',
+        token: '',
       },
       iconUrl: chrome.runtime.getURL('icons/icon.png'),
     };
@@ -40,17 +40,34 @@ export default {
     toastr.options.progressBar = true;
   },
   methods: {
-    showSignup() {
-      this.$emit('show:signup');
+    sendCode() {
+      if (!BaseUtils.isEmail(this.user.email)) {
+        toastr.error('Email is not valid', 'SaltyNote');
+      }
+
+      toastr.info('Processing, please wait...');
+
+      chrome.runtime.sendMessage({ action: types.VERIFY_EMAIL, email: this.user.email }, response => {
+        if (!response.done) {
+          toastr.error('Sending code failed. Please try again later');
+        } else {
+          toastr.success('Verification code is sent to your email.');
+        }
+        return true;
+      });
     },
-    login() {
-      if (!BaseUtils.isUsernameValid(this.user.username) || !BaseUtils.isPasswordValid(this.user.password)) {
-        toastr.error('Username or password is not valid');
+    signIn() {
+      if (!BaseUtils.isEmail(this.user.email)) {
+        toastr.error('Email is not valid', 'SaltyNote');
         return;
       }
-      chrome.runtime.sendMessage({ action: types.LOGIN, user: this.user }, response => {
+      if (!this.user.token) {
+        toastr.error('Email verification code is required', 'SaltyNote');
+        return;
+      }
+      chrome.runtime.sendMessage({ action: types.SIGNUP, user: this.user }, response => {
         if (!response.done) {
-          toastr.error('Login failed. Username or password may be wrong');
+          toastr.error('SignIn failed. Please try again later');
         }
         return true;
       });
