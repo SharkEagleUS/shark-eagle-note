@@ -8,7 +8,7 @@
       <small id="emailHelp" class="form-text text-muted text-left">We'll never share your email with anyone else.</small>
     </div>
 
-    <div class="input-group">
+    <div class="form-group input-group">
       <input type="text" class="form-control" v-model="user.token" placeholder="Verification Code" />
       <div class="input-group-append">
         <button class="btn btn-outline-primary" type="button" @click="sendCode">Send Code</button>

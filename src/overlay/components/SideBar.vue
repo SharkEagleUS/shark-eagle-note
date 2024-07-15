@@ -103,7 +103,6 @@ export default {
   name: 'SideBar',
   components: {
     Login,
-    Signup,
     SelectedTextBlockquote,
     NoAnnotationPlaceholder,
     CustomAnnotationCard,
@@ -242,7 +241,6 @@ export default {
 <style lang="scss">
 div.saltynote {
   $zIndex: 9999;
-
   div#crx-side-bar.card.text-white {
     height: 100vh;
     width: 400px !important;
