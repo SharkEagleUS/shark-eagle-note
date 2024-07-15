@@ -102,7 +102,7 @@ export default {
 
 <style lang="scss">
 // https://stackoverflow.com/a/63592166/4114408
-$zIndex: 999999999999;
+$zIndex: 999998;
 .saltynote {
   position: absolute;
   top: 0;
