@@ -88,7 +88,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === types.ADD_NOTE) {
     const pa = request.pageAnnotation;
     const pageAnnotation = {
-      text: pa.text,
+      selected_text: pa.text,
       note: removeScriptTags(pa.note),
       highlight_color: pa.highlightColor || defaultColor,
       is_page_only: pa.isPageOnly || false,
@@ -112,7 +112,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const pa = request.pageAnnotation;
     const pageAnnotation = {
       id: pa.id,
-      text: pa.text,
+      selected_text: pa.text,
       note: removeScriptTags(pa.note),
       highlight_color: pa.highlightColor || defaultColor,
       tags: pa.tags || [],
