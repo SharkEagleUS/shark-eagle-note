@@ -27,7 +27,7 @@ export function highlightAll(notes) {
     done: () => {
       notes.forEach(note => {
         if (!note.isPageOnly) {
-          instance.mark(note.text, options(note));
+          instance.mark(note.selectedText, options(note));
         }
       });
     },
@@ -37,7 +37,7 @@ export function highlightAll(notes) {
 export function highlight(note) {
   instance.unmark({
     done: () => {
-      instance.mark(note.text, options(note));
+      instance.mark(note.selectedText, options(note));
     },
   });
 }
