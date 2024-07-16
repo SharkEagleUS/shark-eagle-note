@@ -48,7 +48,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["icons/dog.jpg", "icons/icon.png"],
+      "resources": ["icons/dog.jpg", "icons/icon.png", "icons/notfound.png"],
       "matches": ["<all_urls>"]
     }
   ],
