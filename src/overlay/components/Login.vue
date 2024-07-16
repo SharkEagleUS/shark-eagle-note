@@ -65,7 +65,7 @@ export default {
         toastr.error('Email verification code is required', 'SaltyNote');
         return;
       }
-      chrome.runtime.sendMessage({ action: types.SIGNUP, user: this.user }, response => {
+      chrome.runtime.sendMessage({ action: types.LOGIN, user: this.user }, response => {
         if (!response.done) {
           toastr.error('SignIn failed. Please try again later');
         }

@@ -1,6 +1,6 @@
 import * as types from './utils/action-types';
 import * as httpUtils from './utils/http-utils';
-import { emailVerify, login, signup } from './utils/http-utils';
+import { emailVerify, login } from './utils/http-utils';
 import { getSanitizedUrl } from './utils/urls';
 import { removeScriptTags } from './utils/base';
 import { defaultColor } from './utils/color';
@@ -23,7 +23,7 @@ const askLogin = (tab, iconClick = false) => {
 const getNotes = (tab, actionType, iconClick = false) => {
   const url = getSanitizedUrl(tab.url);
   httpUtils
-    .fetchAllMyNotesByUrl(url)
+    .fetchAllMyAnnotationsByUrl(url)
     .then(notes => {
       chrome.tabs.sendMessage(tab.id, { action: actionType, iconClick: iconClick, data: notes }, response => {
         console.log(response);
@@ -142,19 +142,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
   }
 
-  if (request.action === types.LOGIN) {
-    login(request.user.username, request.user.password)
-      .then(() => {
-        console.log('Login succeed');
-        getNotes(sender.tab, types.SHOW_SIDE_BAR);
-        sendResponse({ done: true });
-      })
-      .catch(e => {
-        console.error(e);
-        sendResponse({ done: false, message: e });
-      });
-  }
-
   if (request.action === types.LOGOUT) {
     chrome.storage.local.clear(() => {
       sendResponse({ done: true });
@@ -172,10 +159,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
   }
 
-  if (request.action === types.SIGNUP) {
-    signup(request.user.username, request.user.email, request.user.password, request.user.token)
+  if (request.action === types.LOGIN) {
+    login(request.user.email, request.user.token)
       .then(() => {
-        console.log('sign up succeed');
+        console.log('sign in succeed');
         getNotes(sender.tab, types.SHOW_SIDE_BAR);
         sendResponse({ done: true });
       })

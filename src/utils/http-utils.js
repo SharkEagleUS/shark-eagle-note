@@ -69,11 +69,11 @@ export const isLoggedIn = () => {
   });
 };
 
-export const login = (username, password) => {
+export const login = (email, token) => {
   return new Promise((resolve, reject) => {
     post('/login', {
-      username: username,
-      password: password,
+      email: email,
+      token: token,
     })
       .then(response => response.json())
       .then(token => {
@@ -91,33 +91,12 @@ export const login = (username, password) => {
 
 export const emailVerify = email => {
   return new Promise((resolve, reject) => {
-    post('/email/verification', {
+    post('/email', {
       email: email,
     })
       .then(response => response.json())
       .then(data => {
         resolve(data);
-      })
-      .catch(error => {
-        console.error(error);
-        reject(error);
-      });
-  });
-};
-
-export const signup = (username, email, password, token) => {
-  return new Promise((resolve, reject) => {
-    post('/signup', {
-      username: username,
-      email: email,
-      password: password,
-      token: token,
-    })
-      .then(response => response.json())
-      .then(data => {
-        login(username, password)
-          .then(r => resolve(r))
-          .catch(e => reject(e));
       })
       .catch(error => {
         console.error(error);
@@ -151,7 +130,7 @@ export const fetchAllMyNotes = keyword => {
     checkUserAuthInfo()
       .then(res => {
         const authStr = 'Bearer '.concat(res.access_token);
-        get('/notes' + (keyword ? '?keyword=' + keyword : ''), { Authorization: authStr })
+        get('/v1/annotations' + (keyword ? '?keyword=' + keyword : ''), { Authorization: authStr })
           .then(response => response.json())
           .then(data => {
             resolve(camelcaseKeys(data));
@@ -167,12 +146,12 @@ export const fetchAllMyNotes = keyword => {
   });
 };
 
-export const fetchAllMyNotesByUrl = url => {
+export const fetchAllMyAnnotationsByUrl = url => {
   return new Promise((resolve, reject) => {
     checkUserAuthInfo()
       .then(res => {
         const authStr = 'Bearer '.concat(res.access_token);
-        post('/notes', { url: url }, { Authorization: authStr })
+        post('/v1/annotations', { url: url }, { Authorization: authStr })
           .then(response => response.json())
           .then(data => {
             resolve(camelcaseKeys(data));
@@ -193,7 +172,7 @@ export const savePageAnnotation = pageAnnotation => {
     checkUserAuthInfo()
       .then(res => {
         const authStr = 'Bearer '.concat(res.access_token);
-        post('/note', pageAnnotation, { Authorization: authStr })
+        post('/v1/annotation', pageAnnotation, { Authorization: authStr })
           .then(response => response.json())
           .then(data => {
             resolve(camelcaseKeys(data));
@@ -217,7 +196,7 @@ export const updatePageAnnotation = pageAnnotation => {
     checkUserAuthInfo()
       .then(res => {
         const authStr = 'Bearer '.concat(res.access_token);
-        post('/note/' + pageAnnotation.id, pageAnnotation, { Authorization: authStr })
+        post('/v1/annotation/' + pageAnnotation.id, pageAnnotation, { Authorization: authStr })
           .then(response => response.json())
           .then(data => {
             resolve(camelcaseKeys(data));
@@ -241,7 +220,7 @@ export const deletePageAnnotation = pageAnnotationId => {
     checkUserAuthInfo()
       .then(res => {
         const authStr = 'Bearer '.concat(res.access_token);
-        post('/note/' + pageAnnotationId + '/delete', {}, { Authorization: authStr })
+        post('/v1/annotation/' + pageAnnotationId + '/delete', {}, { Authorization: authStr })
           .then(response => response.json())
           .then(data => {
             resolve();
