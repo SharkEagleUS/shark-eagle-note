@@ -4,10 +4,10 @@
       <div class="card-body">
         <form>
           <div class="form-group">
-            <input type="email" class="form-control" v-model="selectText" placeholder="Why you add this note?" />
+            <input type="email" class="form-control" v-model="selectText" placeholder="Why you add this annotation?" />
           </div>
           <div class="form-group">
-            <textarea class="form-control" rows="5" v-model="myComment" placeholder="Your Notes Here" required></textarea>
+            <textarea class="form-control" rows="5" v-model="myComment" placeholder="Your Comment Here" required></textarea>
           </div>
           <span class="error-msg" v-if="errorMsg"> {{ errorMsg }}</span>
           <button type="submit" class="btn btn-primary float-right" @click.prevent="submitCustomNote">Add</button>
