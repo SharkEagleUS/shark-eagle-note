@@ -65,10 +65,10 @@ export default {
           this.dataTable.row
             .add([
               `<a href="${note.url}" target="_blank">${getUrlHostname(note.url)}</a>`,
-              note.text,
+              note.selectedText,
               mdRender(note.note),
               note.tags && note.tags.join(','),
-              formatDate(note.createdTime),
+              formatDate(note.createdAt),
               `<button type="button" data-id="${note.id}" class="btn btn-danger note-delete-btn">Delete</button>`,
             ])
             .draw(false);
