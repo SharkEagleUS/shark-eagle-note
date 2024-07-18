@@ -113,7 +113,6 @@ export const refreshToken = refreshToken => {
       .then(response => response.json())
       .then(token => {
         // Token should be returned here.
-        token.refresh_token = refreshToken;
         chrome.storage.local.set({ token: token }, function() {
           resolve(token.access_token);
         });
