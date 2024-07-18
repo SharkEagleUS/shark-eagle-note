@@ -79,7 +79,7 @@ export const login = (email, token) => {
       .then(token => {
         // Token should be returned here.
         chrome.storage.local.set({ token: token }, function() {
-          resolve(token.access_token);
+          resolve(token);
         });
       })
       .catch(error => {
@@ -114,7 +114,7 @@ export const refreshToken = refreshToken => {
       .then(token => {
         // Token should be returned here.
         chrome.storage.local.set({ token: token }, function() {
-          resolve(token.access_token);
+          resolve(token);
         });
       })
       .catch(error => {
