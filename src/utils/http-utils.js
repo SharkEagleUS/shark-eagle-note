@@ -36,12 +36,12 @@ const checkUserAuthInfo = () => {
         console.error(chrome.runtime.lastError.message);
         reject(chrome.runtime.lastError.message);
       } else {
-        if (!result.token) {
+        if (!result.token || !result.token.access_token) {
           reject(new Error('No token found!'));
           return;
         }
         if (isTokenExpired(result.token.access_token)) {
-          if (isTokenExpired(result.token.refresh_token)) {
+          if (!result.token.refresh_token || isTokenExpired(result.token.refresh_token)) {
             reject(new Error('Access token is expired, and no refresh token found.'));
             return;
           }
