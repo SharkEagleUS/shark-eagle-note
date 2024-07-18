@@ -47,8 +47,8 @@ export const updatePageAnnotation = pageAnnotation => {
 
 export const deletePageAnnotation = pageAnnotationId => {
   return new Promise(function(resolve, reject) {
-    if (baseUtils.isBlank(pageAnnotationId)) {
-      reject(new Error('Page Annotation id should be positive number!'));
+    if (!pageAnnotationId || pageAnnotationId < 0) {
+      reject(new Error('Page Annotation id is not valid!'));
       return;
     }
     chrome.runtime.sendMessage({ id: pageAnnotationId, action: types.DELETE_NOTE }, response => {

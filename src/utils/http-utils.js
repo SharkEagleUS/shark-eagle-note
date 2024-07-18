@@ -23,6 +23,27 @@ function post(url, data, headers = {}) {
   });
 }
 
+function put(url, data, headers = {}) {
+  return fetch(getUrl(url), {
+    method: 'PUT',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+}
+
+function deleteX(url, headers = {}) {
+  return fetch(getUrl(url), {
+    method: 'DELETE',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
 const isTokenExpired = token => {
   if (!token) return false;
   const decoded = jwtDecode(token);
@@ -190,12 +211,12 @@ export const savePageAnnotation = pageAnnotation => {
 export const updatePageAnnotation = pageAnnotation => {
   return new Promise((resolve, reject) => {
     if (!pageAnnotation.id) {
-      reject(new Error('Note update: Missing note id.'));
+      reject(new Error('Page annotation update: Missing id field.'));
     }
     checkUserAuthInfo()
       .then(res => {
         const authStr = 'Bearer '.concat(res.access_token);
-        post('/v1/annotation/' + pageAnnotation.id, pageAnnotation, { Authorization: authStr })
+        put('/v1/annotation/' + pageAnnotation.id, pageAnnotation, { Authorization: authStr })
           .then(response => response.json())
           .then(data => {
             resolve(camelcaseKeys(data));
@@ -214,12 +235,12 @@ export const updatePageAnnotation = pageAnnotation => {
 export const deletePageAnnotation = pageAnnotationId => {
   return new Promise((resolve, reject) => {
     if (!pageAnnotationId || pageAnnotationId < 0) {
-      reject(new Error('Note id to delete is not valid'));
+      reject(new Error('Page annotation id to delete is not valid'));
     }
     checkUserAuthInfo()
       .then(res => {
         const authStr = 'Bearer '.concat(res.access_token);
-        post('/v1/annotation/' + pageAnnotationId + '/delete', {}, { Authorization: authStr })
+        deleteX('/v1/annotation/' + pageAnnotationId, { Authorization: authStr })
           .then(response => response.json())
           .then(data => {
             resolve();

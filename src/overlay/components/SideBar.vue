@@ -205,7 +205,7 @@ export default {
       this.showCustomNoteWindow = true;
     },
     deleteMyNote(noteId) {
-      if (confirm('Sure to delete this note?')) {
+      if (confirm('Sure to delete this annotation?')) {
         deletePageAnnotation(noteId).then(() => {
           console.log('Page annotation is deleted');
           this.annotations = this.annotations.filter(n => noteId !== n.id);
