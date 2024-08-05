@@ -41,7 +41,7 @@ export default {
       highlight: {
         doneForPageLoad: false,
         cmdToggle: false,
-        popover: [],
+        popover: {},
       },
     };
   },
