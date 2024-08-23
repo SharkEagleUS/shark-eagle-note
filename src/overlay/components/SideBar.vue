@@ -1,7 +1,7 @@
 <template>
   <div id="crx-side-bar" class="card text-white" v-show="showSideBar">
     <div class="card-header bg-primary text-center border-primary">
-      SaltyNote
+      MetaNote
       <button type="button" class="close" aria-label="Close" @click="closeSideBar">
         <span>&times;</span>
       </button>
@@ -117,6 +117,7 @@ export default {
         }
         if (this.showSideBar) {
           this.annotations = request.data;
+          console.log(JSON.stringify(request.data));
         }
       }
       sendResponse({ done: true });

@@ -1,7 +1,6 @@
 import PouchDB from 'pouchdb-browser';
 import PouchDBFind from 'pouchdb-find';
-import { genId, getCurrentTimestampInMs, removeScriptTags } from './base';
-import { defaultColor } from './color';
+import { genId, getCurrentTimestampInMs } from './base';
 
 PouchDB.plugin(PouchDBFind);
 const db = new PouchDB('metanote');
@@ -9,11 +8,20 @@ db.createIndex({
   index: { fields: ['url'] },
 });
 
+const idPrefix = 'meta';
+
 export const fetchAllMyNotes = keyword => {
   return new Promise((resolve, reject) => {
     db.allDocs({ include_docs: true, descending: true })
       .then(doc => {
-        resolve(doc.rows);
+        resolve(
+          doc.rows
+            .filter(r => r.id.startsWith(idPrefix))
+            .map(r => {
+              r.doc.id = r.doc._id;
+              return r.doc;
+            })
+        );
       })
       .catch(error => {
         console.error(error);
@@ -27,7 +35,14 @@ export const fetchAllMyAnnotationsByUrl = url => {
     db.find({
       selector: { url: url },
     })
-      .then(doc => resolve(doc.rows))
+      .then(result => {
+        resolve(
+          result.docs.map(d => {
+            d.id = d._id;
+            return d;
+          })
+        );
+      })
       .catch(function(err) {
         console.error(err);
       });
@@ -36,9 +51,10 @@ export const fetchAllMyAnnotationsByUrl = url => {
 
 export const savePageAnnotation = pageAnnotation => {
   return new Promise((resolve, reject) => {
-    const id = genId();
-    pageAnnotation._id = String(id);
+    const id = idPrefix + '-' + genId();
+    pageAnnotation._id = id;
     pageAnnotation.createdAt = getCurrentTimestampInMs();
+
     db.put(pageAnnotation)
       .then(_ => {
         resolve(db.get(id));
@@ -60,8 +76,6 @@ export const updatePageAnnotation = pageAnnotation => {
     db.get(id)
       .then(doc => {
         // https://pouchdb.com/guides/documents.html#updating-documents%E2%80%93correctly
-
-        doc.selectedText = pageAnnotation.text;
         doc.note = pageAnnotation.note;
         doc.highlightColor = pageAnnotation.highlightColor;
         doc.pageAnnotation = pageAnnotation.tags;

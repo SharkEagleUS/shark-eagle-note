@@ -23,12 +23,6 @@ chrome.runtime.onInstalled.addListener(() => {
     id: types.SALTYNOTE_RIGHT_CLICK_MENU_ID,
     contexts: ['selection'],
   });
-
-  chrome.contextMenus.create({
-    title: 'Toggle Global Search',
-    id: types.TOGGLE_GLOBAL_SEARCH,
-    contexts: ['all'],
-  });
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -84,7 +78,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const pa = request.pageAnnotation;
     const pageAnnotation = {
       id: pa.id,
-      selectedText: pa.text,
       note: removeScriptTags(pa.note),
       highlightColor: pa.highlightColor || defaultColor,
       tags: pa.tags || [],
