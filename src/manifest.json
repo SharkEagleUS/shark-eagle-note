@@ -1,7 +1,7 @@
 {
-  "name": "SaltyNote",
-  "description": "An extension that helps you make annotations for any web page",
-  "version": "0.1.0",
+  "name": "MetaNote",
+  "description": "A local-only extension that helps you make annotations for any web page within Meta",
+  "version": "0.0.1",
   "manifest_version": 3,
   "icons": {
     "48": "icons/icon.png",
@@ -9,7 +9,7 @@
     "144": "icons/icon.png"
   },
   "action": {
-    "default_title": "SaltyNote"
+    "default_title": "MetaNote"
   },
   "background": {
     "service_worker": "background.js"
@@ -54,6 +54,6 @@
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'",
-    "sandbox": "sandbox allow-scripts; script-src 'self' 'https://*.saltynote.com'; object-src 'self'"
+    "sandbox": "sandbox allow-scripts; script-src 'self'; object-src 'self'"
   }
 }

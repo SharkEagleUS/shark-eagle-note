@@ -19,7 +19,7 @@ const getNotes = (tab, actionType, iconClick = false) => {
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
-    title: 'Annotate in SaltyNote',
+    title: 'Annotate in MetaNote',
     id: types.SALTYNOTE_RIGHT_CLICK_MENU_ID,
     contexts: ['selection'],
   });
@@ -61,10 +61,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === types.ADD_NOTE) {
     const pa = request.pageAnnotation;
     const pageAnnotation = {
-      selected_text: pa.text,
+      selectedText: pa.text,
       note: removeScriptTags(pa.note),
-      highlight_color: pa.highlightColor || defaultColor,
-      is_page_only: pa.isPageOnly || false,
+      highlightColor: pa.highlightColor || defaultColor,
+      isPageOnly: pa.isPageOnly || false,
       tags: pa.tags || [],
       url: getSanitizedUrl(sender.tab.url),
     };
@@ -84,9 +84,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const pa = request.pageAnnotation;
     const pageAnnotation = {
       id: pa.id,
-      selected_text: pa.text,
+      selectedText: pa.text,
       note: removeScriptTags(pa.note),
-      highlight_color: pa.highlightColor || defaultColor,
+      highlightColor: pa.highlightColor || defaultColor,
       tags: pa.tags || [],
     };
     DB.updatePageAnnotation(pageAnnotation)

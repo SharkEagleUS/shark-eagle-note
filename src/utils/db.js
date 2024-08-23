@@ -37,7 +37,7 @@ export const fetchAllMyAnnotationsByUrl = url => {
 export const savePageAnnotation = pageAnnotation => {
   return new Promise((resolve, reject) => {
     const id = genId();
-    pageAnnotation.id = id;
+    pageAnnotation._id = String(id);
     pageAnnotation.createdAt = getCurrentTimestampInMs();
     db.put(pageAnnotation)
       .then(_ => {
@@ -61,9 +61,9 @@ export const updatePageAnnotation = pageAnnotation => {
       .then(doc => {
         // https://pouchdb.com/guides/documents.html#updating-documents%E2%80%93correctly
 
-        doc.selected_text = pageAnnotation.text;
+        doc.selectedText = pageAnnotation.text;
         doc.note = pageAnnotation.note;
-        doc.highlight_color = pageAnnotation.highlightColor;
+        doc.highlightColor = pageAnnotation.highlightColor;
         doc.pageAnnotation = pageAnnotation.tags;
         db.put(doc).then(_ => {
           db.get(id).then(doc => resolve(doc));
