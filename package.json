@@ -1,8 +1,8 @@
 {
-  "name": "metanote",
-  "version": "0.0.1",
-  "description": "A local-only extension that helps you make annotations for any web page within Meta",
-  "author": "Hao Zhou <zhouhao@meta.com>",
+  "name": "shark-eagle-note",
+  "version": "0.0.2",
+  "description": "A local-only extension that helps you make annotations for any web page",
+  "author": "Hao Zhou <royhzhou@gmail.com>",
   "engines": {
     "node": ">=10"
   },

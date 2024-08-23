@@ -52,7 +52,7 @@ export default {
     return {
       keyword: '',
       annotations: [],
-      image: chrome.runtime.getURL('icons/dog.jpg'),
+      image: chrome.runtime.getURL('icons/notfound.png'),
     };
   },
   created() {

@@ -1,7 +1,7 @@
 <template>
   <div id="crx-side-bar" class="card text-white" v-show="showSideBar">
     <div class="card-header bg-primary text-center border-primary">
-      MetaNote
+      Shark Eagle Note
       <button type="button" class="close" aria-label="Close" @click="closeSideBar">
         <span>&times;</span>
       </button>

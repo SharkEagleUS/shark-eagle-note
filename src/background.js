@@ -19,7 +19,7 @@ const getNotes = (tab, actionType, iconClick = false) => {
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
-    title: 'Annotate in MetaNote',
+    title: 'Annotate in Shark Eagle Note',
     id: types.SALTYNOTE_RIGHT_CLICK_MENU_ID,
     contexts: ['selection'],
   });
