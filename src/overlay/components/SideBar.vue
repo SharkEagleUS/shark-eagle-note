@@ -7,15 +7,7 @@
       </button>
     </div>
     <div class="card-body text-primary overflow-auto">
-      <template v-if="showLogin">
-        <Login
-          @show:signup="
-            showLogin = false;
-            showSignup = true;
-          "
-        />
-      </template>
-      <template v-else-if="annotations.length > 0">
+      <template v-if="annotations.length > 0">
         <div class="list-group">
           <a
             href="javascript:void(0)"
@@ -74,14 +66,10 @@
       </template>
       <CustomAnnotationCard v-show="showCustomNoteWindow" @hide:CustomAnnotationCard="showCustomNoteWindow = false" />
     </div>
-    <template v-if="!(showLogin || showSignup)">
-      <div class="card-footer text-muted text-center">
-        <a href="#" title="Add Notes without Select Context" @click.prevent="showCustomNote"> Add Page Note</a>
-      </div>
-      <div class="card-footer text-muted bg-warning text-center logout">
-        <a href="#" title="Logout" @click.prevent="logout"> Logout</a>
-      </div>
-    </template>
+
+    <div class="card-footer text-muted text-center">
+      <a href="#" title="Add Notes without Select Context" @click.prevent="showCustomNote"> Add Page Note</a>
+    </div>
   </div>
 </template>
 
@@ -96,13 +84,11 @@ import { highlight } from '../../utils/highlight-mark';
 import { mdRender } from '../../utils/md';
 import { readableTimestamp } from '../../utils/base';
 import SelectedTextBlockquote from './SelectedTextBlockquote';
-import Login from './Login';
 import VueTagsInput from '@johmun/vue-tags-input';
 
 export default {
   name: 'SideBar',
   components: {
-    Login,
     SelectedTextBlockquote,
     NoAnnotationPlaceholder,
     CustomAnnotationCard,
@@ -114,8 +100,6 @@ export default {
       annotations: [],
       showSideBar: false,
       showCustomNoteWindow: false,
-      showLogin: false,
-      showSignup: false,
       tag: '',
     };
   },
@@ -131,13 +115,8 @@ export default {
         } else {
           this.showSideBar = true;
         }
-        this.showLogin = this.showSignup = false; // Reset first.
         if (this.showSideBar) {
-          if (request.sub_action === types.SHOW_LOGIN) {
-            this.showLogin = true;
-          } else {
-            this.annotations = request.data;
-          }
+          this.annotations = request.data;
         }
       }
       sendResponse({ done: true });
@@ -217,14 +196,6 @@ export default {
     },
     readableTime(ts) {
       return readableTimestamp(ts);
-    },
-    logout() {
-      if (confirm('Sure to logout?')) {
-        chrome.runtime.sendMessage({ action: types.LOGOUT }, response => {
-          this.showLogin = true;
-          return true;
-        });
-      }
     },
     parseTags(newTags) {
       if (!newTags) {

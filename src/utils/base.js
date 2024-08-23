@@ -28,15 +28,14 @@ export const isBlank = str => {
 
 export const readableTimestamp = ts => dayjs(ts).fromNow();
 
-export const isNoShortThanN = (value, len) => {
-  return !validator.isEmpty(value) && value.length >= len;
-};
-export const isUsernameValid = username => {
-  return isNoShortThanN(username, 6) && validator.matches(username, '^[a-z0-9-_]+$', 'i');
-};
-export const isPasswordValid = password => {
-  return isNoShortThanN(password, 6);
-};
 export const isEmail = email => {
   return validator.isEmail(email);
+};
+
+export const getCurrentTimestampInMs = () => {
+  return new Date().getTime();
+};
+
+export const genId = () => {
+  return getCurrentTimestampInMs();
 };

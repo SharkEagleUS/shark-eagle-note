@@ -1,39 +1,19 @@
 import * as types from './utils/action-types';
-import * as httpUtils from './utils/http-utils';
-import { emailVerify, login } from './utils/http-utils';
+import * as DB from './utils/db';
 import { getSanitizedUrl } from './utils/urls';
 import { removeScriptTags } from './utils/base';
 import { defaultColor } from './utils/color';
 
-const askLogin = (tab, iconClick = false) => {
-  chrome.tabs.sendMessage(
-    tab.id,
-    {
-      action: types.SHOW_SIDE_BAR,
-      sub_action: types.SHOW_LOGIN,
-      iconClick: iconClick,
-      data: [],
-    },
-    response => {
-      console.log(response);
-    }
-  );
-};
-
 const getNotes = (tab, actionType, iconClick = false) => {
   const url = getSanitizedUrl(tab.url);
-  httpUtils
-    .fetchAllMyAnnotationsByUrl(url)
+  DB.fetchAllMyAnnotationsByUrl(url)
     .then(notes => {
       chrome.tabs.sendMessage(tab.id, { action: actionType, iconClick: iconClick, data: notes }, response => {
         console.log(response);
       });
     })
-    .catch(() => {
-      // Login is required here when action is show sidebar.
-      if (actionType === types.SHOW_SIDE_BAR) {
-        askLogin(tab, iconClick);
-      }
+    .catch(err => {
+      console.error(err);
     });
 };
 
@@ -54,17 +34,10 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === types.SALTYNOTE_RIGHT_CLICK_MENU_ID) {
     console.log('right click triggered');
-    httpUtils
-      .isLoggedIn()
-      .then(res => {
-        chrome.tabs.sendMessage(tab.id, { action: types.RIGHT_CLICK }, response => {
-          console.log(response);
-        });
-      })
-      .catch(() => {
-        // Ask for login first.
-        askLogin(tab);
-      });
+
+    chrome.tabs.sendMessage(tab.id, { action: types.RIGHT_CLICK }, response => {
+      console.log(response);
+    });
   } else if (info.menuItemId === types.TOGGLE_GLOBAL_SEARCH) {
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       chrome.tabs.sendMessage(tabs[0].id, { action: types.CMD_GLOBAL_SEARCH }, response => {
@@ -95,8 +68,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       tags: pa.tags || [],
       url: getSanitizedUrl(sender.tab.url),
     };
-    httpUtils
-      .savePageAnnotation(pageAnnotation)
+    DB.savePageAnnotation(pageAnnotation)
       .then(res => {
         console.log('save new page annotation successfully!');
         getNotes(sender.tab, types.SHOW_SIDE_BAR);
@@ -117,8 +89,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       highlight_color: pa.highlightColor || defaultColor,
       tags: pa.tags || [],
     };
-    httpUtils
-      .updatePageAnnotation(pageAnnotation)
+    DB.updatePageAnnotation(pageAnnotation)
       .then(res => {
         console.log('Page annotation is updated successfully!');
         sendResponse({ done: true });
@@ -130,8 +101,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === types.DELETE_NOTE) {
-    httpUtils
-      .deletePageAnnotation(request.id)
+    DB.deletePageAnnotation(request.id)
       .then(res => {
         console.log('Page annotation is deleted successfully!');
         sendResponse({ done: true });
@@ -148,33 +118,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
 
-  if (request.action === types.VERIFY_EMAIL) {
-    emailVerify(request.email)
-      .then(() => {
-        sendResponse({ done: true });
-      })
-      .catch(e => {
-        console.error(e);
-        sendResponse({ done: false, message: e });
-      });
-  }
-
-  if (request.action === types.LOGIN) {
-    login(request.user.email, request.user.token)
-      .then(() => {
-        console.log('sign in succeed');
-        getNotes(sender.tab, types.SHOW_SIDE_BAR);
-        sendResponse({ done: true });
-      })
-      .catch(e => {
-        console.error(e);
-        sendResponse({ done: false, message: e });
-      });
-  }
-
   if (request.action === types.SEARCH) {
-    httpUtils
-      .fetchAllMyNotes(request.keyword)
+    DB.fetchAllMyNotes(request.keyword)
       .then(notes => {
         sendResponse(notes);
       })

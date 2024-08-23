@@ -36,7 +36,7 @@ import 'datatables.net-buttons/js/buttons.html5.min';
 import 'datatables.net-buttons/js/buttons.print.min';
 import { mdRender } from '../utils/md';
 import 'highlight.js/styles/github.css';
-import * as httpUtils from '../utils/http-utils';
+import * as DB from '../utils/db';
 
 export default {
   name: 'App',
@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     refreshTableData() {
-      httpUtils.fetchAllMyNotes().then(notes => {
+      DB.fetchAllMyNotes().then(notes => {
         this.dataTable.clear();
         notes.forEach(note => {
           this.dataTable.row
@@ -87,8 +87,7 @@ export default {
     },
     deleteNote(noteId) {
       if (confirm('Are you sure to delete this?')) {
-        httpUtils
-          .deletePageAnnotation(noteId)
+        DB.deletePageAnnotation(noteId)
           .then(res => {
             console.log('Page annotation is deleted successfully!');
             this.refreshTableData();
