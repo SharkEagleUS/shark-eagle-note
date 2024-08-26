@@ -33,7 +33,7 @@ export default {
   methods: {
     submitCustomNote() {
       const pageAnnotation = {
-        selectedText: this.selectText,
+        text: this.selectText,
         note: this.myComment,
         isPageOnly: true,
       };
