@@ -1,6 +1,6 @@
 {
   "name": "shark-eagle-note",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A local-only extension that helps you make annotations for any web page",
   "author": "Hao Zhou <royhzhou@gmail.com>",
   "engines": {
