@@ -2,7 +2,8 @@
   <div class="container">
     <div class="py-5 text-center">
       <img class="d-block mx-auto mb-4" src="/icons/icon.png" alt="" />
-      <h2>Shark Eagle Note Dashboard</h2>
+      <p>请直视我睿智的眼神</p>
+      <p>Please gaze into my wise eye</p>
     </div>
 
     <div class="row">
