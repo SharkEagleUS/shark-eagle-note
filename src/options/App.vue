@@ -50,7 +50,7 @@ export default {
   },
   mounted() {
     this.dataTable = $('#note-table').DataTable({
-      order: [[3, 'desc']],
+      order: [[4, 'desc']],
       processing: true,
       dom: 'Blfrtip',
       buttons: ['copyHtml5', 'csvHtml5', 'print'],
