@@ -78,7 +78,7 @@ export const updatePageAnnotation = pageAnnotation => {
         // https://pouchdb.com/guides/documents.html#updating-documents%E2%80%93correctly
         doc.note = pageAnnotation.note;
         doc.highlightColor = pageAnnotation.highlightColor;
-        doc.pageAnnotation = pageAnnotation.tags;
+        doc.tags = pageAnnotation.tags;
         db.put(doc).then(_ => {
           db.get(id).then(doc => resolve(doc));
         });

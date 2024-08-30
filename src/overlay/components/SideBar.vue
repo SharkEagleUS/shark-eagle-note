@@ -24,7 +24,7 @@
             </template>
             <div class="form-group">
               <template v-if="annotation.showSave">
-                <ColorSelect v-if="!annotation.isPageOnly" :color="getNoteHighlightColor(annotation)" @update:color="annotation.newHighlightColor = $event"></ColorSelect>
+                <ColorSelect v-if="!annotation.isPageOnly" :color="getNoteHighlightColor(annotation)" @update:color="annotation.highlightColor = $event"></ColorSelect>
                 <textarea class="form-control" rows="3" v-model="annotation.note"></textarea>
                 <vue-tags-input v-model="tag" :tags="annotation.tags" @tags-changed="newTags => (annotation.tags = parseTags(newTags))" />
               </template>
@@ -68,7 +68,7 @@
     </div>
 
     <div class="card-footer text-muted text-center">
-      <a href="#" title="Add Notes without Select Context" @click.prevent="showCustomNote"> Add Page Note</a>
+      <a href="#" title="Add Notes without Selecting Context" @click.prevent="showCustomNote"> Add Page Note</a>
     </div>
   </div>
 </template>
@@ -117,7 +117,6 @@ export default {
         }
         if (this.showSideBar) {
           this.annotations = request.data;
-          console.log(JSON.stringify(request.data));
         }
       }
       sendResponse({ done: true });
@@ -157,14 +156,9 @@ export default {
     },
     updateNote(noteId, index) {
       const note = this.annotations[index];
-      if (note.base_note === note.note && (!note.newHighlightColor || note.highlightColor === note.newHighlightColor)) {
-        this.cancelUpdate(index);
-      } else {
-        note.highlightColor = note.newHighlightColor;
-        updatePageAnnotation(note).then(() => {
-          this.toggleSave(index, false);
-        });
-      }
+      updatePageAnnotation(note).then(() => {
+        this.toggleSave(index, false);
+      });
     },
     noteHighlight(note) {
       // if it is a custom note, no need to highlight it in current page
