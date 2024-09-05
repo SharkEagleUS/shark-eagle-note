@@ -145,7 +145,7 @@ export default {
       document.onmousemove = null;
     },
     movePopupNearSelection() {
-      this.selectText = window.getSelection().toString();
+      this.selectText = getSelectedText();
       if (this.selectText) {
         this.left = this.mouseEvent.pageX;
         // TODO: Cannot read its width via `document.getElementById('crx-comment-card').offsetWidth`
