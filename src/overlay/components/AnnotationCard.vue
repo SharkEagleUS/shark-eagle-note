@@ -29,6 +29,7 @@ import * as types from '../../utils/action-types';
 import { submitPageAnnotation } from '../../utils/page-annotation';
 import SelectedTextBlockquote from './SelectedTextBlockquote';
 import VueTagsInput from '@johmun/vue-tags-input';
+import { getSelectedText } from '../../utils/base';
 
 export default {
   name: 'AnnotationCard',
