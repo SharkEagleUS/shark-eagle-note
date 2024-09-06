@@ -172,6 +172,7 @@ div.saltynote {
   #crx-comment-card {
     position: absolute;
     z-index: $zIndex;
+    padding: 0 !important;
 
     #saltynote-form {
       display: block !important;
@@ -180,6 +181,11 @@ div.saltynote {
     .card-header {
       padding: 5px;
       color: white;
+      width: 398px !important;
+    }
+
+    .card-body {
+      width: 398px !important;
     }
 
     &.card {
