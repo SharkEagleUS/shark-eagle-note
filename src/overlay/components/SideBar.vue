@@ -106,7 +106,7 @@ export default {
 
   mounted() {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-      if (request.action === types.SHOW_SIDE_BAR) {
+      if (request.action === types.SHOW_SIDE_BAR && !this.isInIframe()) {
         if (!this.showSideBar) {
           this.showCustomNoteWindow = false;
         }
@@ -199,6 +199,13 @@ export default {
       return newTags.map(tag => {
         return tag.text;
       });
+    },
+    isInIframe() {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
     },
   },
 };
