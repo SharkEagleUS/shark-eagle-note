@@ -19,6 +19,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "all_frames": true,
       "js": ["overlay/overlay.js"],
       "css": ["bs4.css", "overlay/overlay.css"]
     }
