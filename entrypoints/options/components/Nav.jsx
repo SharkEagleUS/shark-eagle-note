@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {IconDeviceDesktopAnalytics, IconLogout, IconMessageChatbot,} from '@tabler/icons-react';
+import {IconDeviceDesktopAnalytics, IconMessageChatbot,} from '@tabler/icons-react';
 import {Center, Image, Stack, Tooltip, UnstyledButton} from '@mantine/core';
 import icon from '/assets/32.png';
 import classes from './Nav.module.css';
@@ -31,17 +31,6 @@ export function Nav() {
     />
   ));
 
-  const logout = () => {
-    if (confirm('Sure to logout?')) {
-      browser.runtime.sendMessage({action: LOGOUT}).then(response => {
-        setTimeout(() => {
-          location.reload();
-        }, 500); // 1000 milliseconds = 1 second
-        return true;
-      });
-    }
-  }
-
   return (
 
     <nav className={classes.navbar}>
@@ -54,10 +43,6 @@ export function Nav() {
           {links}
         </Stack>
       </div>
-
-      <Stack justify="center" gap={0}>
-        <NavbarLink icon={IconLogout} label="Logout" onClick={logout}/>
-      </Stack>
     </nav>
 
   );

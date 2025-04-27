@@ -1,8 +1,7 @@
 import {useEffect, useState} from "react";
-import {Button, Card, CloseButton, Container, Group, Image, Text} from '@mantine/core';
+import {Card, CloseButton, Container, Group, Image, Text} from '@mantine/core';
 import icon from '/assets/32.png';
 import NoAnnotationPlaceholder from './NoAnnotationPlaceholder.jsx';
-import {Login} from '../../components/Login.jsx';
 import {AnnotationCard} from './AnnotationCard.jsx';
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,7 +9,6 @@ import {AnnotationItem} from './AnnotationItem.jsx';
 
 function Sidebar() {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   const [annotations, setAnnotations] = useState([]);
   const [positionX, setPositionX] = useState(0);
   const [positionY, setPositionY] = useState(0);
@@ -26,13 +24,9 @@ function Sidebar() {
       console.log("request event", request.action, request.subAction);
       if (request.action === SHOW_SIDE_BAR) {
         setShowSidebar(true);
-        setShowLogin(false);
-        if (request.subAction === SHOW_LOGIN) {
-          setShowLogin(true);
-        } else {
-          setAnnotations(request.data);
-          highlightAll(request.data);
-        }
+
+        setAnnotations(request.data);
+        highlightAll(request.data);
       } else if (request.action === HIGHLIGHT_ALL) {
         setAnnotations(request.data);
         // annotations.forEach(note => (note.clickCallback = () => {
@@ -54,20 +48,11 @@ function Sidebar() {
   }
 
   const showNoNotePlaceholder = () => {
-    return !showLogin && (!annotations || annotations.length === 0);
+    return !annotations || annotations.length === 0;
   }
 
   const onDelete = (ant) => {
     setAnnotations(annotations.filter(a => a.id !== ant.id));
-  }
-
-  const logout = () => {
-    if (confirm('Sure to logout?')) {
-      browser.runtime.sendMessage({action: LOGOUT}).then(response => {
-        setShowLogin(true);
-        return true;
-      });
-    }
   }
 
   const listView = () => {
@@ -102,10 +87,7 @@ function Sidebar() {
           </Group>
         </Card.Section>
 
-        {
-          showLogin ? <Login/> : listView()
-
-        }
+        {listView()}
 
       </Card>
 
