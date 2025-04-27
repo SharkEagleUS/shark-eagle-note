@@ -1,0 +1,50 @@
+{
+  "name": "shark-eagle-note",
+  "description": "the chrome extension of shark eagle note",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "@mantine/core": "^7.17.3",
+    "@mantine/hooks": "^7.17.3",
+    "@tabler/icons-react": "^3.31.0",
+    "camelcase-keys": "^6.2.2",
+    "dayjs": "^1.11.13",
+    "events": "^3.3.0",
+    "highlight.js": "^10.0.3",
+    "html-react-parser": "^5.2.3",
+    "jquery": "^3.5.1",
+    "jwt-decode": "^3.1.2",
+    "mark.js": "^8.11.1",
+    "markdown-it": "^12.3.2",
+    "pouchdb-browser": "^9.0.0",
+    "pouchdb-find": "^9.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-draggable": "^4.4.6",
+    "react-toastify": "^11.0.5",
+    "ulid": "^3.0.0",
+    "validator": "^13.5.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
+    "@wxt-dev/module-react": "^1.1.2",
+    "postcss": "^8.4.38",
+    "postcss-preset-mantine": "^1.15.0",
+    "postcss-simple-vars": "^7.0.1",
+    "sass-embedded": "^1.86.0",
+    "typescript": "^5.6.3",
+    "wxt": "^0.20.0"
+  }
+}

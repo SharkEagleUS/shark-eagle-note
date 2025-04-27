@@ -1,0 +1,9 @@
+div.shark-eagle-note-root-card {
+  height: 100vh;
+  position: fixed;
+  background-color: var(--mantine-color-gray-0);
+  z-index: 9998;
+  right: 0;
+  padding-inline: unset !important;
+  box-shadow: -12px 0px 25px 0px rgba(0, 0, 0, 0.75);
+}
