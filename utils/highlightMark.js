@@ -6,7 +6,7 @@ const options = note => {
     exclude: ['.shark-eagle-note-chrome-ext-wxt *'],
     separateWordSearch: false,
     each: node => {
-      node.setAttribute('title', note.note);
+      node.setAttribute('title', note.comment);
       node.setAttribute('id', note.id);
       if (note.highlightColor) {
         node.setAttribute('style', 'background-color:' + note.highlightColor + ';');
@@ -27,7 +27,7 @@ export function highlightAll(notes) {
     done: () => {
       notes.forEach(note => {
         if (!note.isPageOnly) {
-          instance.mark(note.selectedText, options(note));
+          instance.mark(note.highlightText, options(note));
         }
       });
     },
@@ -37,7 +37,7 @@ export function highlightAll(notes) {
 export function highlight(note) {
   instance.unmark({
     done: () => {
-      instance.mark(note.selectedText, options(note));
+      instance.mark(note.highlightText, options(note));
     },
   });
 }

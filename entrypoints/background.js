@@ -6,6 +6,7 @@ export default defineBackground(() => {
     const url = getSanitizedUrl(tab.url);
     pouchdb.fetchAllMyAnnotationsByUrlPouchdb(url)
       .then(notes => {
+        console.log(JSON.stringify(notes));
         browser.tabs.sendMessage(tab.id, {action: actionType, iconClick: iconClick, data: notes}, response => {
           console.log(JSON.stringify(response));
         });
@@ -54,7 +55,7 @@ export default defineBackground(() => {
       const pa = request.pageAnnotation;
       const pageAnnotation = {
         highlightText: pa.highlightText,
-        note: removeScriptTags(pa.note),
+        comment: removeScriptTags(pa.comment),
         highlightColor: pa.highlightColor || defaultColor,
         isPageOnly: pa.isPageOnly || false,
         tags: pa.tags || [],

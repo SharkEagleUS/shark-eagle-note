@@ -56,7 +56,7 @@ export function AnnotationItem({annotation, onDelete}) {
         <Container style={{
           border: '1px solid var(--mantine-color-gray-3)',
           borderRadius: '5px',
-        }}>{mdRender(ant.comment)}</Container>
+        }}>{mdRender(ant.comment || '')}</Container>
         <Group gap={7} mt="md">
           {
             ant.tags.map((tag) => (
