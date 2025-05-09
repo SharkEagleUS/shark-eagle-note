@@ -8,6 +8,8 @@ import {
   Center,
   Container,
   Group,
+  Pagination,
+  Select,
   Table,
   Text,
   TextInput,
@@ -15,6 +17,9 @@ import {
 } from '@mantine/core';
 import classes from './TableSort.module.css';
 import {toast} from 'react-toastify';
+import {deletePageAnnotationBackground} from '/utils/pageAnnotation.js';
+import {getUrlHostname} from '/utils/urls.js';
+import {formatDate} from '/utils/base.js';
 
 const searchableKeys = ['highlightText', 'comment'];
 
@@ -80,33 +85,57 @@ export function TableSort({rawAnnotations}) {
   const [sortBy, setSortBy] = useState(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [displayAnnotations, setDisplayAnnotations] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState('100');
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     setDisplayAnnotations(rawAnnotations);
-  }, [rawAnnotations]);
+    setCurrentPage(1); // Reset to first page when data changes
+
+    // Calculate total pages based on page size
+    if (pageSize === 'all') {
+      setTotalPages(1);
+    } else {
+      setTotalPages(Math.max(1, Math.ceil(rawAnnotations.length / Number(pageSize))));
+    }
+  }, [rawAnnotations, pageSize]);
 
 
   const setSorting = (field) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
-    setDisplayAnnotations(sortData(displayAnnotations, {sortBy: field, reversed, search}));
+    const sortedData = sortData(displayAnnotations, {sortBy: field, reversed, search});
+    setDisplayAnnotations(sortedData);
+    setCurrentPage(1); // Reset to first page when sorting
   };
 
   const handleSearchChange = (event) => {
     const {value} = event.currentTarget;
     setSearch(value);
-    setDisplayAnnotations(sortData(rawAnnotations, {sortBy, reversed: reverseSortDirection, search: value}));
+    const searchedData = sortData(rawAnnotations, {sortBy, reversed: reverseSortDirection, search: value});
+    setDisplayAnnotations(searchedData);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
   const deleteById = (id) => {
-
     if (confirm('Are you sure to delete this?')) {
       deletePageAnnotationBackground(id)
         .then(res => {
-          setDisplayAnnotations(
-            displayAnnotations.filter((annotation) => annotation.id !== id)
-          )
+          const updatedAnnotations = displayAnnotations.filter((annotation) => annotation.id !== id);
+          setDisplayAnnotations(updatedAnnotations);
+
+          // Handle pagination after deletion
+          if (pageSize !== 'all') {
+            const newTotalPages = Math.max(1, Math.ceil(updatedAnnotations.length / Number(pageSize)));
+            setTotalPages(newTotalPages);
+
+            // If current page is now empty and not the first page, go to previous page
+            if (currentPage > newTotalPages) {
+              setCurrentPage(newTotalPages);
+            }
+          }
         })
         .catch(err => {
           console.log(err.message);
@@ -115,7 +144,16 @@ export function TableSort({rawAnnotations}) {
     }
   }
 
-  const rows = displayAnnotations.map((row) => (
+  // Get current page data
+  const getPaginatedData = () => {
+    if (pageSize === 'all') return displayAnnotations;
+
+    const startIndex = (currentPage - 1) * Number(pageSize);
+    const endIndex = startIndex + Number(pageSize);
+    return displayAnnotations.slice(startIndex, endIndex);
+  };
+
+  const rows = getPaginatedData().map((row) => (
     <Table.Tr key={row.id}>
       <Table.Td>
         <Anchor href={row.url} target="_blank"> {getUrlHostname(row.url)} </Anchor>
@@ -152,8 +190,6 @@ export function TableSort({rawAnnotations}) {
       <Container fluid p={0} style={{
         display: 'flex',
         flexDirection: 'column',
-        height: '85vh',
-        overflowY: 'auto',
       }}>
 
         <Table miw={700} layout="fixed" striped highlightOnHover withTableBorder withColumnBorders>
@@ -210,7 +246,30 @@ export function TableSort({rawAnnotations}) {
         </Table>
       </Container>
 
-      {/*<Pagination total={10} mt='md' pos='fixed' right={80}/>*/}
+      <Group justify="space-between" mt="md">
+        <Select
+          label="Page Size"
+          value={String(pageSize)}
+          onChange={(value) => setPageSize(value)}
+          data={[
+            { value: '50', label: '50' },
+            { value: '100', label: '100' },
+            { value: '500', label: '500' },
+            { value: 'all', label: 'All' }
+          ]}
+          w={100}
+        />
+        <Group>
+          <Text fz="sm" c="dimmed">Total: {displayAnnotations.length} rows</Text>
+          {pageSize !== 'all' && (
+            <Pagination
+              total={totalPages}
+              value={currentPage}
+              onChange={setCurrentPage}
+            />
+          )}
+        </Group>
+      </Group>
     </>
   );
 }
