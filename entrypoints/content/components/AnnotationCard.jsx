@@ -1,22 +1,11 @@
 import {useEffect, useState} from 'react';
-import {
-  Blockquote,
-  Button,
-  Card,
-  CloseButton,
-  ColorPicker,
-  Group,
-  Image,
-  TagsInput,
-  Text,
-  Textarea
-} from '@mantine/core';
+import {Blockquote, Button, Card, CloseButton, ColorPicker, Group, Image, TagsInput, Text, Textarea} from '@mantine/core';
 import icon from '/public/icon/32.png';
 import Draggable from 'react-draggable';
 import {toast} from 'react-toastify';
 import {getSelectedText} from '/utils/base.js';
 
-export function AnnotationCard({positionX, positionY}) {
+function AnnotationCard({positionX, positionY}) {
 
   const DEFAULT_COLOR = '#fd7e14';
   const [showCard, setShowCard] = useState(false);
@@ -28,6 +17,7 @@ export function AnnotationCard({positionX, positionY}) {
 
   useEffect(() => {
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      console.log("request event 2", request.action, request.subAction);
       if (request.action === RIGHT_CLICK) {
         setShowCard(true);
         setHighlightText(getSelectedText());
@@ -111,3 +101,5 @@ export function AnnotationCard({positionX, positionY}) {
     ) :
     null;
 }
+
+export default AnnotationCard;

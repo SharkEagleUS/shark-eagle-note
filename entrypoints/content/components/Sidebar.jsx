@@ -2,10 +2,10 @@ import {useEffect, useState} from "react";
 import {Card, CloseButton, Container, Group, Image, Text} from '@mantine/core';
 import icon from '/assets/32.png';
 import NoAnnotationPlaceholder from './NoAnnotationPlaceholder.jsx';
-import {AnnotationCard} from './AnnotationCard.jsx';
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {AnnotationItem} from './AnnotationItem.jsx';
+import AnnotationCard from './AnnotationCard.jsx';
 
 function Sidebar() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -71,25 +71,24 @@ function Sidebar() {
     );
   }
 
-  if (!showSidebar) return null;
-
   return (
     <>
       <ToastContainer theme="colored"/>
-      <Card shadow="sm" className="shark-eagle-note-root-card" w={400}>
-        <Card.Section inheritPadding py="xs" style={{
-          backgroundColor: "var(--mantine-primary-color-filled)",
-        }}>
-          <Group justify="space-between" style={{padding: '0 16px'}}>
-            <Image src={icon} w={24} alt="logo"/>
-            <Text fw={500} c='#FFF'>Shark Eagle Note</Text>
-            <CloseButton size={20} position="bottom-end" onClick={closeSidebar}/>
-          </Group>
-        </Card.Section>
+      {showSidebar &&
+        <Card shadow="sm" className="shark-eagle-note-root-card" w={400}>
+          <Card.Section inheritPadding py="xs" style={{
+            backgroundColor: "var(--mantine-primary-color-filled)",
+          }}>
+            <Group justify="space-between" style={{padding: '0 16px'}}>
+              <Image src={icon} w={24} alt="logo"/>
+              <Text fw={500} c='#FFF'>Shark Eagle Note</Text>
+              <CloseButton size={20} position="bottom-end" onClick={closeSidebar}/>
+            </Group>
+          </Card.Section>
 
-        {listView()}
+          {listView()}
 
-      </Card>
+        </Card>}
 
       <AnnotationCard positionX={positionX} positionY={positionY}/>
     </>

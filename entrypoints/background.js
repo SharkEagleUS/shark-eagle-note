@@ -7,7 +7,7 @@ export default defineBackground(() => {
     pouchdb.fetchAllMyAnnotationsByUrlPouchdb(url)
       .then(notes => {
         browser.tabs.sendMessage(tab.id, {action: actionType, iconClick: iconClick, data: notes}, response => {
-          console.log(response);
+          console.log(JSON.stringify(response));
         });
       })
       .catch(err => {
@@ -27,13 +27,13 @@ export default defineBackground(() => {
     if (info.menuItemId === SHARK_EAGLE_NOTE_RIGHT_CLICK_MENU_ID) {
       console.log('right click triggered');
 
-      browser.tabs.sendMessage(tab.id, {action: RIGHT_CLICK}, response => {
-        console.log(response);
+      browser.tabs.sendMessage(tab.id, {action: RIGHT_CLICK}).then(response => {
+        console.log(JSON.stringify(response));
       });
     } else if (info.menuItemId === TOGGLE_GLOBAL_SEARCH) {
       browser.tabs.query({active: true, currentWindow: true}, tabs => {
         browser.tabs.sendMessage(tabs[0].id, {action: CMD_GLOBAL_SEARCH}, response => {
-          console.log(response);
+          console.log(JSON.stringify(response));
         });
       });
     }
