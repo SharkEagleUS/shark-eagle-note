@@ -16,7 +16,7 @@ export const addZero = value => ('0' + value).slice(-2);
 export const formatDate = value => {
   if (value) {
     const dt = new Date(value);
-    return `${dt.getFullYear()}/${addZero(dt.getMonth() + 1)}/${addZero(dt.getDate())}`;
+    return `${dt.getFullYear()}/${addZero(dt.getMonth() + 1)}/${addZero(dt.getDate())} ${addZero(dt.getHours())}:${addZero(dt.getMinutes())}:${addZero(dt.getSeconds())}`;
   }
   return '';
 };

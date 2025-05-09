@@ -1,24 +1,9 @@
 import {useEffect, useState} from 'react';
 import {IconChevronDown, IconChevronUp, IconSearch, IconSelector} from '@tabler/icons-react';
-import {
-  Anchor,
-  Badge,
-  Blockquote,
-  Button,
-  Center,
-  Container,
-  Group,
-  Pagination,
-  Select,
-  Table,
-  Text,
-  TextInput,
-  UnstyledButton,
-} from '@mantine/core';
+import {Anchor, Badge, Blockquote, Button, Center, Container, Group, Modal, Pagination, Select, Table, Text, TextInput, UnstyledButton,} from '@mantine/core';
 import classes from './TableSort.module.css';
 import {toast} from 'react-toastify';
 import {deletePageAnnotationBackground} from '/utils/pageAnnotation.js';
-import {getUrlHostname} from '/utils/urls.js';
 import {formatDate} from '/utils/base.js';
 
 const searchableKeys = ['highlightText', 'comment'];
@@ -88,6 +73,8 @@ export function TableSort({rawAnnotations}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState('100');
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedAnnotation, setSelectedAnnotation] = useState(null);
+  const [modalOpened, setModalOpened] = useState(false);
 
   useEffect(() => {
     setDisplayAnnotations(rawAnnotations);
@@ -153,10 +140,19 @@ export function TableSort({rawAnnotations}) {
     return displayAnnotations.slice(startIndex, endIndex);
   };
 
+  const handleRowClick = (annotation) => {
+    setSelectedAnnotation(annotation);
+    setModalOpened(true);
+  };
+
   const rows = getPaginatedData().map((row) => (
-    <Table.Tr key={row.id}>
+    <Table.Tr 
+      key={row.id} 
+      style={{ cursor: 'pointer' }}
+      onClick={() => handleRowClick(row)}
+    >
       <Table.Td>
-        <Anchor href={row.url} target="_blank"> {getUrlHostname(row.url)} </Anchor>
+        <Anchor href={row.url} target="_blank" onClick={(e) => e.stopPropagation()} style={{ wordBreak: 'break-all' }}> {row.url} </Anchor>
       </Table.Td>
       <Table.Td p={0}>
         <Blockquote color={row.highlightColor} p='xs' m={0}>
@@ -174,34 +170,152 @@ export function TableSort({rawAnnotations}) {
         </Group>
       </Table.Td>
       <Table.Td>{formatDate(row.createdAt)}</Table.Td>
-      <Table.Td><Button color='red' onClick={() => deleteById(row.id)}>Delete</Button></Table.Td>
+      <Table.Td><Button color='red' onClick={(e) => { e.stopPropagation(); deleteById(row.id); }}>Delete</Button></Table.Td>
     </Table.Tr>
   ));
 
   return (
     <>
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title={<Text fw={700} size="xl">Annotation Details</Text>}
+        size="lg"
+        radius="md"
+        padding="xl"
+        overlayProps={{
+          blur: 3,
+          opacity: 0.55,
+        }}
+      >
+        {selectedAnnotation && (
+          <div style={{ padding: '10px' }}>
+            <Text fw={700} size="lg" mb="xs" c="blue.7">URL</Text>
+            <Anchor 
+              href={selectedAnnotation.url} 
+              target="_blank" 
+              mb="md" 
+              display="block" 
+              style={{ 
+                wordBreak: 'break-all', 
+                padding: '10px',
+                backgroundColor: 'var(--mantine-color-gray-0)',
+                borderRadius: 'var(--mantine-radius-sm)',
+                border: '1px solid var(--mantine-color-gray-3)'
+              }}
+            >
+              {selectedAnnotation.url}
+            </Anchor>
+
+            <Text fw={700} size="lg" mb="xs" mt="lg" c="blue.7">Highlight Text</Text>
+            <Blockquote 
+              color={selectedAnnotation.highlightColor} 
+              p="md" 
+              mb="md"
+              style={{
+                borderRadius: 'var(--mantine-radius-sm)',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+              }}
+            >
+              {selectedAnnotation.highlightText}
+            </Blockquote>
+
+            <Text fw={700} size="lg" mb="xs" c="blue.7">Your Note</Text>
+            <Text 
+              mb="md" 
+              style={{ 
+                padding: '10px',
+                backgroundColor: 'var(--mantine-color-gray-0)',
+                borderRadius: 'var(--mantine-radius-sm)',
+                border: '1px solid var(--mantine-color-gray-3)'
+              }}
+            >
+              {mdRender(selectedAnnotation.comment || "No comment")}
+            </Text>
+
+            <Text fw={700} size="lg" mb="xs" c="blue.7">Tags</Text>
+            <Group mb="md" style={{ 
+              padding: selectedAnnotation.tags && selectedAnnotation.tags.length > 0 ? '10px' : '0',
+              backgroundColor: selectedAnnotation.tags && selectedAnnotation.tags.length > 0 ? 'var(--mantine-color-gray-0)' : 'transparent',
+              borderRadius: 'var(--mantine-radius-sm)',
+              border: selectedAnnotation.tags && selectedAnnotation.tags.length > 0 ? '1px solid var(--mantine-color-gray-3)' : 'none'
+            }}>
+              {selectedAnnotation.tags && selectedAnnotation.tags.length > 0 ? (
+                selectedAnnotation.tags.map((tag) => (
+                  <Badge color="blue" radius="md" key={tag} size="lg">{tag}</Badge>
+                ))
+              ) : (
+                <Text c="dimmed">No tags</Text>
+              )}
+            </Group>
+
+            <Text fw={700} size="lg" mb="xs" c="blue.7">Created At</Text>
+            <Text 
+              mb="md" 
+              style={{ 
+                padding: '10px',
+                backgroundColor: 'var(--mantine-color-gray-0)',
+                borderRadius: 'var(--mantine-radius-sm)',
+                border: '1px solid var(--mantine-color-gray-3)'
+              }}
+            >
+              {formatDate(selectedAnnotation.createdAt)}
+            </Text>
+
+            <Group justify="flex-end" mt="xl">
+              <Button 
+                color="red" 
+                onClick={() => { deleteById(selectedAnnotation.id); setModalOpened(false); }}
+                radius="md"
+              >
+                Delete
+              </Button>
+              <Button 
+                onClick={() => setModalOpened(false)}
+                variant="outline"
+                radius="md"
+              >
+                Close
+              </Button>
+            </Group>
+          </div>
+        )}
+      </Modal>
+
       <TextInput
         placeholder="Search by any field"
-        mb="md"
-        leftSection={<IconSearch size={16} stroke={1.5}/>}
+        mb="xl"
+        leftSection={<IconSearch size={18} stroke={1.5}/>}
         value={search}
         onChange={handleSearchChange}
+        size="md"
+        radius="md"
+        style={{
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+        }}
       />
       <Container fluid p={0} style={{
         display: 'flex',
         flexDirection: 'column',
       }}>
 
-        <Table miw={700} layout="fixed" striped highlightOnHover withTableBorder withColumnBorders>
+        <Table 
+          miw={700} 
+          layout="fixed" 
+          striped 
+          highlightOnHover 
+          withTableBorder 
+          withColumnBorders
+        >
           <Table.Tbody>
-            <Table.Tr bg="var(--mantine-color-blue-1)">
+            <Table.Tr bg="var(--mantine-color-blue-2)">
               <Th
-                width={250}
+                width={300}
                 sorted={sortBy === 'url'}
                 reversed={reverseSortDirection}
                 onSort={() => setSorting('url')}
               >
-                Url
+                <Text fw={700}>URL</Text>
               </Th>
               <Th
                 width='25%'
@@ -209,25 +323,29 @@ export function TableSort({rawAnnotations}) {
                 reversed={reverseSortDirection}
                 onSort={() => setSorting('highlightText')}
               >
-                Highlight Text
+                <Text fw={700}>Highlight Text</Text>
               </Th>
               <Th
                 sorted={sortBy === 'comment'}
                 reversed={reverseSortDirection}
                 onSort={() => setSorting('comment')}
               >
-                Your Note
+                <Text fw={700}>Your Note</Text>
               </Th>
-              <Table.Th className={classes.th} w={250}> Tags</Table.Th>
+              <Table.Th className={classes.th} w={250}>
+                <Text fw={700}>Tags</Text>
+              </Table.Th>
               <Th
-                width={150}
-                sorted={sortBy === ' createdAt'}
+                width={180}
+                sorted={sortBy === 'createdAt'}
                 reversed={reverseSortDirection}
                 onSort={() => setSorting('createdAt')}
               >
-                Created At
+                <Text fw={700}>Created At</Text>
               </Th>
-              <Table.Th className={classes.th} w={120}></Table.Th>
+              <Table.Th className={classes.th} w={120}>
+                <Text fw={700}>Actions</Text>
+              </Table.Th>
             </Table.Tr>
           </Table.Tbody>
           <Table.Tbody>
@@ -236,7 +354,7 @@ export function TableSort({rawAnnotations}) {
             ) : (
               <Table.Tr>
                 <Table.Td colSpan={6}>
-                  <Text fw={500} ta="center">
+                  <Text fw={500} ta="center" p="xl">
                     Nothing found
                   </Text>
                 </Table.Td>
@@ -246,9 +364,9 @@ export function TableSort({rawAnnotations}) {
         </Table>
       </Container>
 
-      <Group justify="space-between" mt="md">
+      <Group justify="space-between" mt="xl" mb="md">
         <Select
-          label="Page Size"
+          label={<Text fw={500}>Page Size</Text>}
           value={String(pageSize)}
           onChange={(value) => setPageSize(value)}
           data={[
@@ -258,6 +376,11 @@ export function TableSort({rawAnnotations}) {
             { value: 'all', label: 'All' }
           ]}
           w={100}
+          size="md"
+          radius="md"
+          style={{
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+          }}
         />
         <Group>
           <Text fz="sm" c="dimmed">Total: {displayAnnotations.length} rows</Text>
@@ -266,6 +389,9 @@ export function TableSort({rawAnnotations}) {
               total={totalPages}
               value={currentPage}
               onChange={setCurrentPage}
+              radius="md"
+              size="md"
+              withEdges
             />
           )}
         </Group>
