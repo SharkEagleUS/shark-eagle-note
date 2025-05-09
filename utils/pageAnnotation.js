@@ -12,13 +12,13 @@ import * as baseUtils from './base';
  */
 
 const isPageAnnotationValid = pageAnnotation => {
-  return pageAnnotation && (pageAnnotation.text || pageAnnotation.note);
+  return pageAnnotation && (pageAnnotation.highlightText || pageAnnotation.note);
 };
 
 export const submitPageAnnotationBackground = pageAnnotation => {
   return new Promise(function (resolve, reject) {
     if (!isPageAnnotationValid(pageAnnotation)) {
-      reject(new Error('pageAnnotation should have at least selected text or custom note(comment).'));
+      reject(new Error('pageAnnotation should have at least selected text or comment.'));
       return;
     }
     const payload = {
