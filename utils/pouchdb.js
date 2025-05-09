@@ -81,7 +81,7 @@ export const updatePageAnnotationPouchdb = pageAnnotation => {
     pouchdb.get(id)
       .then(doc => {
         // https://pouchdb.com/guides/documents.html#updating-documents%E2%80%93correctly
-        doc.comment = pageAnnotation.note;
+        doc.comment = pageAnnotation.comment;
         doc.highlightColor = pageAnnotation.highlightColor;
         doc.tags = pageAnnotation.tags;
         doc.updatedAt = getCurrentTimestampInMs();

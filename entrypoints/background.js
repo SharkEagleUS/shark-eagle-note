@@ -77,7 +77,7 @@ export default defineBackground(() => {
       const pa = request.pageAnnotation;
       const pageAnnotation = {
         id: pa.id,
-        comment: removeScriptTags(pa.note),
+        comment: removeScriptTags(pa.comment),
         highlightColor: pa.highlightColor || defaultColor,
         tags: pa.tags || [],
       };
