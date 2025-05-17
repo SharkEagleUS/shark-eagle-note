@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
-import {Card, CloseButton, Container, Group, Image, Text} from '@mantine/core';
+import {Button, Card, CloseButton, Container, Group, Image, Text} from '@mantine/core';
+import {IconPlus} from '@tabler/icons-react';
 import icon from '/assets/32.png';
 import NoAnnotationPlaceholder from './NoAnnotationPlaceholder.jsx';
 import {ToastContainer} from 'react-toastify';
@@ -75,7 +76,11 @@ function Sidebar() {
     <>
       <ToastContainer theme="colored"/>
       {showSidebar &&
-        <Card shadow="sm" className="shark-eagle-note-root-card" w={400}>
+        <Card shadow="sm" className="shark-eagle-note-root-card" w={400} style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100vh',
+        }}>
           <Card.Section inheritPadding py="xs" style={{
             backgroundColor: "var(--mantine-primary-color-filled)",
           }}>
@@ -86,8 +91,21 @@ function Sidebar() {
             </Group>
           </Card.Section>
 
-          {listView()}
+          <div style={{flex: 1, overflowY: 'auto'}}>
+            {listView()}
+          </div>
 
+          <Card.Section>
+            <Button
+              fullWidth
+              leftSection={<IconPlus size={16}/>}
+              onClick={() => {
+                console.log('Add page note clicked');
+              }}
+            >
+              Add Page Note
+            </Button>
+          </Card.Section>
         </Card>}
 
       <AnnotationCard positionX={positionX} positionY={positionY}/>

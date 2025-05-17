@@ -6,7 +6,6 @@ export default defineBackground(() => {
     const url = getSanitizedUrl(tab.url);
     pouchdb.fetchAllMyAnnotationsByUrlPouchdb(url)
       .then(notes => {
-        console.log(JSON.stringify(notes));
         browser.tabs.sendMessage(tab.id, {action: actionType, iconClick: iconClick, data: notes}, response => {
           console.log(JSON.stringify(response));
         });
@@ -48,6 +47,24 @@ export default defineBackground(() => {
 
   browser.action.onClicked.addListener(tab => {
     getNotes(tab, SHOW_SIDE_BAR, true);
+
+    browser.storage.local.get('initialDataLoaded').then(result => {
+      if (!result.initialDataLoaded) {
+        for (let i = 0; i < 155; i++) {
+          console.log(i);
+          const pageAnnotation = {
+            highlightText: "highlight text " + i,
+            comment: `comment ${i}`,
+            highlightColor: defaultColor,
+            isPageOnly: false,
+            tags: [i, 'test'],
+            url: 'https://www.google.com/',
+          };
+          pouchdb.savePageAnnotationPouchdb(pageAnnotation)
+        }
+        browser.storage.local.set({initialDataLoaded: true});
+      }
+    });
   });
 
   browser.runtime.onMessage.addListener((request, sender, sendResponse) => {

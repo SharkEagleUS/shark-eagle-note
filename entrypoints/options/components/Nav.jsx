@@ -16,7 +16,7 @@ function NavbarLink({icon: Icon, label, active, onClick}) {
 
 const menu = [
   {icon: IconDeviceDesktopAnalytics, label: 'All Notes'},
-  {icon: IconMessageChatbot, label: 'AI Chat'},
+  // {icon: IconMessageChatbot, label: 'AI Chat'},
 ];
 
 export function Nav() {
