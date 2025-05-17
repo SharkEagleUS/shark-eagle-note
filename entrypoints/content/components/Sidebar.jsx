@@ -11,16 +11,8 @@ import AnnotationCard from './AnnotationCard.jsx';
 function Sidebar() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [annotations, setAnnotations] = useState([]);
-  const [positionX, setPositionX] = useState(0);
-  const [positionY, setPositionY] = useState(0);
-
-  const handleMouseUp = (event) => {
-    setPositionX(event.pageX);
-    setPositionY(event.pageY);
-  }
 
   useEffect(() => {
-    document.addEventListener('mouseup', handleMouseUp);
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log("request event", request.action, request.subAction);
       if (request.action === SHOW_SIDE_BAR) {
@@ -42,7 +34,7 @@ function Sidebar() {
     });
 
     return () => {
-      document.removeEventListener('mouseup', handleMouseUp);
+
     };
   }, []);
 
@@ -111,7 +103,7 @@ function Sidebar() {
           </Card.Section>
         </Card>}
 
-      <AnnotationCard positionX={positionX} positionY={positionY}/>
+      <AnnotationCard/>
     </>
   );
 }

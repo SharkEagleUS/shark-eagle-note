@@ -1,11 +1,11 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import {Blockquote, Button, Card, CloseButton, ColorPicker, Group, Image, TagsInput, Text, Textarea} from '@mantine/core';
 import icon from '/public/icon/32.png';
 import Draggable from 'react-draggable';
 import {toast} from 'react-toastify';
 import {getSelectedText} from '/utils/base.js';
 
-function AnnotationCard({positionX, positionY}) {
+function AnnotationCard() {
 
   const DEFAULT_COLOR = '#fd7e14';
   const [showCard, setShowCard] = useState(false);
@@ -15,7 +15,16 @@ function AnnotationCard({positionX, positionY}) {
   const [tags, setTags] = useState([]);
   const myRef = useRef(null);
 
+  const positionXRef = useRef(0);
+  const positionYRef = useRef(0);
+
+  const handleMouseUp = (event) => {
+    positionXRef.current = event.pageX;
+    positionYRef.current = event.pageY;
+  }
+
   useEffect(() => {
+    document.addEventListener('mouseup', handleMouseUp);
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log("request event 2", request.action, request.subAction);
       if (request.action === RIGHT_CLICK) {
@@ -27,7 +36,7 @@ function AnnotationCard({positionX, positionY}) {
     });
 
     return () => {
-      // Cleanup (equivalent to componentWillUnmount)
+      document.removeEventListener('mouseup', handleMouseUp);
     };
   }, []);
 
@@ -61,7 +70,7 @@ function AnnotationCard({positionX, positionY}) {
 
   return showCard ? (
       <>
-        <Draggable nodeRef={myRef} defaultPosition={{x: positionX, y: positionY}}>
+        <Draggable nodeRef={myRef} defaultPosition={{x: positionXRef.current, y: positionYRef.current}}>
           <Card ref={myRef} shadow="sm" className="new-card" w={400} pos='absolute'
                 style={{
                   boxShadow: '18px 25px 16px 0 rgba(0, 0, 0, 0.49)',
