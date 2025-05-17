@@ -25,13 +25,16 @@ function Sidebar() {
       console.log("request event", request.action, request.subAction);
       if (request.action === SHOW_SIDE_BAR) {
         setShowSidebar(true);
-
+        request.data.forEach(note => (note.clickCallback = () => {
+          console.log(note.id);
+        }));
         setAnnotations(request.data);
         highlightAll(request.data);
       } else if (request.action === HIGHLIGHT_ALL) {
+        request.data.forEach(note => (note.clickCallback = () => {
+          console.log(note.id);
+        }));
         setAnnotations(request.data);
-        // annotations.forEach(note => (note.clickCallback = () => {
-        // }));
         highlightAll(request.data);
       }
       sendResponse({done: true});
