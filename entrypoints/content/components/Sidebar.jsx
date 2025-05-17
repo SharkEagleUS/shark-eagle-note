@@ -7,9 +7,11 @@ import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {AnnotationItem} from './AnnotationItem.jsx';
 import AnnotationCard from './AnnotationCard.jsx';
+import PageAnnotationCard from './PageAnnotationCard.jsx';
 
 function Sidebar() {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [showPageNoteCard, setShowPageNoteCard] = useState(false);
   const [annotations, setAnnotations] = useState([]);
 
   useEffect(() => {
@@ -52,6 +54,7 @@ function Sidebar() {
   }
 
   const listView = () => {
+    console.log("list view");
     return (
       <>
         {showNoNotePlaceholder() ? <NoAnnotationPlaceholder/> : (
@@ -91,15 +94,17 @@ function Sidebar() {
           </div>
 
           <Card.Section>
-            <Button
-              fullWidth
-              leftSection={<IconPlus size={16}/>}
-              onClick={() => {
-                console.log('Add page note clicked');
-              }}
-            >
-              Add Page Note
-            </Button>
+            {showPageNoteCard ?
+              <PageAnnotationCard showCard={setShowPageNoteCard}/> :
+              <Button
+                fullWidth
+                leftSection={<IconPlus size={16}/>}
+                onClick={() => {
+                  setShowPageNoteCard(true);
+                }}
+              >
+                Add Page Note
+              </Button>}
           </Card.Section>
         </Card>}
 
