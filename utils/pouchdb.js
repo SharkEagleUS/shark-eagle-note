@@ -37,6 +37,7 @@ export const fetchAllMyAnnotationsByUrlPouchdb = url => {
   return new Promise((resolve, reject) => {
     pouchdb.find({
       selector: {url: url},
+      limit: 500,
     })
       .then(result => {
         resolve(
