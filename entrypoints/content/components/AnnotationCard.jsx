@@ -7,9 +7,8 @@ import {getSelectedText} from '/utils/base.js';
 
 function AnnotationCard() {
 
-  const DEFAULT_COLOR = '#fd7e14';
   const [showCard, setShowCard] = useState(false);
-  const [color, setColor] = useState(DEFAULT_COLOR);
+  const [color, setColor] = useState(defaultColor);
   const [comment, setComment] = useState('');
   const [highlightText, setHighlightText] = useState('');
   const [tags, setTags] = useState([]);
@@ -90,7 +89,7 @@ function AnnotationCard() {
             </Blockquote>
             <ColorPicker format="hex" withPicker={false} value={color} mt="md"
                          onChange={setColor}
-                         swatches={['#fa5252', '#be4bdb', '#228be6', '#40c057', '#fab005', '#fd7e14']}/>
+                         swatches={colors}/>
             <Textarea
               placeholder="Your Perosnal Note here" mt="md"
               autosize

@@ -5,7 +5,7 @@ import {toast} from 'react-toastify';
 
 export function AnnotationItem({annotation, onDelete}) {
   const [inEdit, setInEdit] = useState(false);
-  const [color, setColor] = useState('#fd7e14');
+  const [color, setColor] = useState(defaultColor);
   const [comment, setComment] = useState('');
   const [tags, setTags] = useState([]);
 
@@ -91,7 +91,7 @@ export function AnnotationItem({annotation, onDelete}) {
         </Blockquote>
         <ColorPicker format="hex" withPicker={false} value={color} mt="md"
                      onChange={setColor}
-                     swatches={['#fa5252', '#be4bdb', '#228be6', '#40c057', '#fab005', '#fd7e14']}/>
+                     swatches={colors}/>
         <Textarea
           placeholder="Your Perosnal Note here" mt="md"
           autosize

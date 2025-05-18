@@ -11,7 +11,6 @@ const options = note => {
       if (note.highlightColor) {
         node.setAttribute('style', 'background-color:' + note.highlightColor + ';');
       }
-      node.setAttribute('data-v-highlight', '');
       if (note.clickCallback) {
         node.addEventListener('click', note.clickCallback.bind(this, note));
       }

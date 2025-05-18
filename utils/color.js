@@ -1,15 +1,4 @@
-const colors_ = [
-  '#ffff00', // yellow
-  '#007bff', // blue
-  '#28a745', // green
-  '#ff4500', // red
-  '#fc88ab', // pink
-  '#8a54ce', // purple
-];
+const colors_ = ['#fd7e14', '#be4bdb', '#228be6', '#40c057', '#fab005', '#fa5252'];
 
 export const colors = colors_;
 export const defaultColor = colors_[0];
-export const colorToClassName = color => {
-  color = color || defaultColor;
-  return color.replace('#', 'shark-eagle-note-');
-};

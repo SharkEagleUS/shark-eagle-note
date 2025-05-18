@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Button, Card, CloseButton, Container, Group, Image, Text} from '@mantine/core';
+import {Button, Card, CloseButton, Container, Group, Image, Notification, Text} from '@mantine/core';
 import {IconPlus} from '@tabler/icons-react';
 import icon from '/assets/32.png';
 import NoAnnotationPlaceholder from './NoAnnotationPlaceholder.jsx';
@@ -109,6 +109,9 @@ function Sidebar() {
         </Card>}
 
       <AnnotationCard/>
+      <Notification color="rgba(120, 31, 31, 1)" title="We notify you that">
+        You are now obligated to give a star to Mantine project on GitHub
+      </Notification>
     </>
   );
 }
