@@ -12,7 +12,7 @@ const options = note => {
         node.setAttribute('style', 'background-color:' + note.highlightColor + ';');
       }
       if (note.clickCallback) {
-        node.addEventListener('click', note.clickCallback.bind(this, note));
+        node.addEventListener('click', event => note.clickCallback(event, note));
       }
     },
   };

@@ -4,8 +4,6 @@ import {toast} from 'react-toastify';
 import {useInputState} from '@mantine/hooks';
 
 function PageAnnotationCard({showCard}) {
-
-  const DEFAULT_COLOR = '#fd7e14';
   const [comment, setComment] = useState('');
   const [highlightText, setHighlightText] = useInputState('');
   const [tags, setTags] = useState([]);
@@ -21,7 +19,7 @@ function PageAnnotationCard({showCard}) {
     const pageAnnotation = {
       highlightText: highlightText,
       comment: comment,
-      highlightColor: DEFAULT_COLOR,
+      highlightColor: defaultColor,
       tags: tags,
       isPageOnly: true,
     };

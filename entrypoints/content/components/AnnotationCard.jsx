@@ -56,7 +56,7 @@ function AnnotationCard() {
       .then(() => {
         // cleanup
         setComment('');
-        setColor(DEFAULT_COLOR);
+        setColor(defaultColor);
         setHighlightText('');
         setTags([]);
         closeCard();
