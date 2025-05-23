@@ -26,11 +26,19 @@ function Th({children, reversed, sorted, onSort, width}) {
   );
 }
 
-function filterData(data, search) {
+function filterData(data, search, selectedTag = null) {
   const query = search.toLowerCase().trim();
-  return data.filter((item) =>
-    searchableKeys.some((key) => item[key].toLowerCase().includes(query))
-  );
+  return data.filter((item) => {
+    // First filter by search query
+    const matchesSearch = searchableKeys.some((key) => item[key].toLowerCase().includes(query));
+
+    // Then filter by selected tag if one is selected
+    const matchesTag = selectedTag 
+      ? item.tags && item.tags.includes(selectedTag)
+      : true;
+
+    return matchesSearch && matchesTag;
+  });
 }
 
 const columnCompare = (a, b) => {
@@ -47,10 +55,10 @@ function sortData(
   data,
   payload
 ) {
-  const {sortBy} = payload;
+  const {sortBy, selectedTag} = payload;
 
   if (!sortBy) {
-    return filterData(data, payload.search);
+    return filterData(data, payload.search, selectedTag);
   }
 
   return filterData(
@@ -61,7 +69,8 @@ function sortData(
 
       return columnCompare(a[sortBy], b[sortBy]);
     }),
-    payload.search
+    payload.search,
+    selectedTag
   );
 }
 
@@ -75,25 +84,34 @@ export function TableSort({rawAnnotations}) {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
   const [modalOpened, setModalOpened] = useState(false);
+  const [selectedTag, setSelectedTag] = useState(null);
 
   useEffect(() => {
-    setDisplayAnnotations(rawAnnotations);
+    // Apply filters (search and tag)
+    const filteredData = sortData(rawAnnotations, {
+      sortBy,
+      reversed: reverseSortDirection,
+      search,
+      selectedTag
+    });
+
+    setDisplayAnnotations(filteredData);
     setCurrentPage(1); // Reset to first page when data changes
 
     // Calculate total pages based on page size
     if (pageSize === 'all') {
       setTotalPages(1);
     } else {
-      setTotalPages(Math.max(1, Math.ceil(rawAnnotations.length / Number(pageSize))));
+      setTotalPages(Math.max(1, Math.ceil(filteredData.length / Number(pageSize))));
     }
-  }, [rawAnnotations, pageSize]);
+  }, [rawAnnotations, pageSize, selectedTag]);
 
 
   const setSorting = (field) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
-    const sortedData = sortData(displayAnnotations, {sortBy: field, reversed, search});
+    const sortedData = sortData(displayAnnotations, {sortBy: field, reversed, search, selectedTag});
     setDisplayAnnotations(sortedData);
     setCurrentPage(1); // Reset to first page when sorting
   };
@@ -101,9 +119,20 @@ export function TableSort({rawAnnotations}) {
   const handleSearchChange = (event) => {
     const {value} = event.currentTarget;
     setSearch(value);
-    const searchedData = sortData(rawAnnotations, {sortBy, reversed: reverseSortDirection, search: value});
+    const searchedData = sortData(rawAnnotations, {sortBy, reversed: reverseSortDirection, search: value, selectedTag});
     setDisplayAnnotations(searchedData);
     setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handleTagClick = (tag, event) => {
+    event.stopPropagation(); // Prevent row click event
+
+    // If the tag is already selected, clear the selection
+    if (selectedTag === tag) {
+      setSelectedTag(null);
+    } else {
+      setSelectedTag(tag);
+    }
   };
 
   const deleteById = (id) => {
@@ -164,7 +193,15 @@ export function TableSort({rawAnnotations}) {
         <Group gap={7} mt={5}>
           {
             row.tags && row.tags.map((tag) => (
-              <Badge color="blue" radius="sm" key={tag}>{tag}</Badge>
+              <Badge 
+                color={selectedTag === tag ? "green" : "blue"} 
+                radius="sm" 
+                key={tag}
+                style={{ cursor: 'pointer' }}
+                onClick={(e) => handleTagClick(tag, e)}
+              >
+                {tag}
+              </Badge>
             ))
           }
         </Group>
@@ -242,7 +279,19 @@ export function TableSort({rawAnnotations}) {
             }}>
               {selectedAnnotation.tags && selectedAnnotation.tags.length > 0 ? (
                 selectedAnnotation.tags.map((tag) => (
-                  <Badge color="blue" radius="md" key={tag} size="lg">{tag}</Badge>
+                  <Badge 
+                    color={selectedTag === tag ? "green" : "blue"} 
+                    radius="md" 
+                    key={tag} 
+                    size="lg"
+                    style={{ cursor: 'pointer' }}
+                    onClick={(e) => {
+                      handleTagClick(tag, e);
+                      setModalOpened(false); // Close modal after selecting a tag
+                    }}
+                  >
+                    {tag}
+                  </Badge>
                 ))
               ) : (
                 <Text c="dimmed">No tags</Text>
@@ -284,7 +333,7 @@ export function TableSort({rawAnnotations}) {
 
       <TextInput
         placeholder="Search by any field"
-        mb="xl"
+        mb="md"
         leftSection={<IconSearch size={18} stroke={1.5}/>}
         value={search}
         onChange={handleSearchChange}
@@ -294,6 +343,21 @@ export function TableSort({rawAnnotations}) {
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
         }}
       />
+
+      {selectedTag && (
+        <Group mb="xl">
+          <Text fw={500}>Filtered by tag:</Text>
+          <Badge 
+            color="green" 
+            radius="md" 
+            size="lg"
+            style={{ cursor: 'pointer' }}
+            onClick={() => setSelectedTag(null)}
+          >
+            {selectedTag} ×
+          </Badge>
+        </Group>
+      )}
       <Container fluid p={0} style={{
         display: 'flex',
         flexDirection: 'column',
