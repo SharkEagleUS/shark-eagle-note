@@ -74,7 +74,7 @@ function sortData(
   );
 }
 
-export function TableSort({rawAnnotations, selectedTag = null}) {
+export function TableSort({rawAnnotations, selectedTag = null, onTagClick}) {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
@@ -125,8 +125,10 @@ export function TableSort({rawAnnotations, selectedTag = null}) {
 
   const handleTagClick = (tag, event) => {
     event.stopPropagation(); // Prevent row click event
-    // Tag selection is now controlled from parent component
-    // No action needed here - tags are selected from the Tags page
+    // Call the onTagClick callback to filter notes by the clicked tag
+    if (onTagClick) {
+      onTagClick(tag);
+    }
   };
 
   const deleteById = (id) => {

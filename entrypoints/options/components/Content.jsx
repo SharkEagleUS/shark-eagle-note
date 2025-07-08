@@ -28,11 +28,11 @@ export function Content({currentView, selectedTag, onTagClick}) {
   const renderContent = () => {
     switch (currentView) {
       case 0: // All Notes
-        return <TableSort rawAnnotations={annotations} selectedTag={selectedTag} />;
+        return <TableSort rawAnnotations={annotations} selectedTag={selectedTag} onTagClick={onTagClick} />;
       case 1: // Tags
         return <Tags annotations={annotations} onTagClick={onTagClick} />;
       default:
-        return <TableSort rawAnnotations={annotations} selectedTag={selectedTag} />;
+        return <TableSort rawAnnotations={annotations} selectedTag={selectedTag} onTagClick={onTagClick} />;
     }
   };
 
