@@ -434,6 +434,7 @@ export function TableSort({rawAnnotations}) {
           value={String(pageSize)}
           onChange={(value) => setPageSize(value)}
           data={[
+            { value: '25', label: '25' },
             { value: '50', label: '50' },
             { value: '100', label: '100' },
             { value: '500', label: '500' },
