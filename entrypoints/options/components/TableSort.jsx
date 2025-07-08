@@ -29,10 +29,10 @@ function Th({children, reversed, sorted, onSort, width}) {
 function filterData(data, search, selectedTag = null) {
   const query = search.toLowerCase().trim();
   return data.filter((item) => {
-    // First filter by search query
-    const matchesSearch = searchableKeys.some((key) => item[key].toLowerCase().includes(query));
+    // Filter by search query if there is one
+    const matchesSearch = query === '' || searchableKeys.some((key) => item[key] && item[key].toLowerCase().includes(query));
 
-    // Then filter by selected tag if one is selected
+    // Filter by selected tag if one is selected
     const matchesTag = selectedTag 
       ? item.tags && item.tags.includes(selectedTag)
       : true;
@@ -74,7 +74,7 @@ function sortData(
   );
 }
 
-export function TableSort({rawAnnotations, selectedTag = null, onTagClick}) {
+export function TableSort({rawAnnotations, selectedTag = null, onTagClick, onClearTag}) {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
@@ -103,7 +103,7 @@ export function TableSort({rawAnnotations, selectedTag = null, onTagClick}) {
     } else {
       setTotalPages(Math.max(1, Math.ceil(filteredData.length / Number(pageSize))));
     }
-  }, [rawAnnotations, pageSize, selectedTag]);
+  }, [rawAnnotations, pageSize, selectedTag, search, sortBy, reverseSortDirection]);
 
 
   const setSorting = (field) => {
@@ -347,9 +347,12 @@ export function TableSort({rawAnnotations, selectedTag = null, onTagClick}) {
             color="green" 
             radius="md" 
             size="lg"
+            style={{ cursor: 'pointer' }}
+            onClick={() => onClearTag && onClearTag()}
           >
-            {selectedTag}
+            {selectedTag} ×
           </Badge>
+          <Text size="sm" c="dimmed">(Click to clear filter)</Text>
         </Group>
       )}
       <Container fluid p={0} style={{

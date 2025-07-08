@@ -24,11 +24,15 @@ function App() {
     setCurrentView(0); // Switch to All Notes view
   };
 
+  const handleClearTag = () => {
+    setSelectedTag(null);
+  };
+
   return (
     <Container fluid p={0} display="flex">
       <ToastContainer theme="colored"/>
       <Nav onViewChange={handleViewChange} currentView={currentView}/>
-      <Content currentView={currentView} selectedTag={selectedTag} onTagClick={handleTagClick}/>
+      <Content currentView={currentView} selectedTag={selectedTag} onTagClick={handleTagClick} onClearTag={handleClearTag}/>
     </Container>
   );
 }
