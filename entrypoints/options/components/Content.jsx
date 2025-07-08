@@ -1,9 +1,10 @@
 import {TableSort} from './TableSort.jsx';
+import {Tags} from './Tags.jsx';
 import {Container} from '@mantine/core';
 import {useEffect, useState} from 'react';
 import {fetchAllMyNotesPouchdb} from '/utils/pouchdb.js';
 
-export function Content() {
+export function Content({currentView, selectedTag, onTagClick}) {
 
   const [annotations, setAnnotations] = useState([]);
 
@@ -24,10 +25,21 @@ export function Content() {
     });
   }, []);
 
+  const renderContent = () => {
+    switch (currentView) {
+      case 0: // All Notes
+        return <TableSort rawAnnotations={annotations} selectedTag={selectedTag} />;
+      case 1: // Tags
+        return <Tags annotations={annotations} onTagClick={onTagClick} />;
+      default:
+        return <TableSort rawAnnotations={annotations} selectedTag={selectedTag} />;
+    }
+  };
+
   return (
     <>
       <Container p='xl' fluid>
-        <TableSort rawAnnotations={annotations}/>
+        {renderContent()}
       </Container>
     </>
   );

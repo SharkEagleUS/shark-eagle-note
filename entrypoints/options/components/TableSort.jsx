@@ -74,7 +74,7 @@ function sortData(
   );
 }
 
-export function TableSort({rawAnnotations}) {
+export function TableSort({rawAnnotations, selectedTag = null}) {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
@@ -84,7 +84,6 @@ export function TableSort({rawAnnotations}) {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedAnnotation, setSelectedAnnotation] = useState(null);
   const [modalOpened, setModalOpened] = useState(false);
-  const [selectedTag, setSelectedTag] = useState(null);
 
   useEffect(() => {
     // Apply filters (search and tag)
@@ -126,13 +125,8 @@ export function TableSort({rawAnnotations}) {
 
   const handleTagClick = (tag, event) => {
     event.stopPropagation(); // Prevent row click event
-
-    // If the tag is already selected, clear the selection
-    if (selectedTag === tag) {
-      setSelectedTag(null);
-    } else {
-      setSelectedTag(tag);
-    }
+    // Tag selection is now controlled from parent component
+    // No action needed here - tags are selected from the Tags page
   };
 
   const deleteById = (id) => {
@@ -351,10 +345,8 @@ export function TableSort({rawAnnotations}) {
             color="green" 
             radius="md" 
             size="lg"
-            style={{ cursor: 'pointer' }}
-            onClick={() => setSelectedTag(null)}
           >
-            {selectedTag} ×
+            {selectedTag}
           </Badge>
         </Group>
       )}

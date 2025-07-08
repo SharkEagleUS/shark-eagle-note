@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import {IconDeviceDesktopAnalytics, IconMessageChatbot,} from '@tabler/icons-react';
+import {useState, useEffect} from 'react';
+import {IconDeviceDesktopAnalytics, IconTags} from '@tabler/icons-react';
 import {Center, Image, Stack, Tooltip, UnstyledButton} from '@mantine/core';
 import icon from '/assets/32.png';
 import classes from './Nav.module.css';
@@ -16,18 +16,27 @@ function NavbarLink({icon: Icon, label, active, onClick}) {
 
 const menu = [
   {icon: IconDeviceDesktopAnalytics, label: 'All Notes'},
-  // {icon: IconMessageChatbot, label: 'AI Chat'},
+  {icon: IconTags, label: 'Tags'},
 ];
 
-export function Nav() {
-  const [active, setActive] = useState(0);
+export function Nav({onViewChange, currentView}) {
+  const [active, setActive] = useState(currentView || 0);
+
+  useEffect(() => {
+    setActive(currentView);
+  }, [currentView]);
+
+  const handleClick = (index) => {
+    setActive(index);
+    onViewChange(index);
+  };
 
   const links = menu.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => handleClick(index)}
     />
   ));
 
