@@ -34,7 +34,7 @@
     "react-draggable": "^4.4.6",
     "react-toastify": "^11.0.5",
     "ulid": "^3.0.0",
-    "validator": "^13.5.2"
+    "validator": "^13.15.22"
   },
   "devDependencies": {
     "@types/react": "^19.0.1",
